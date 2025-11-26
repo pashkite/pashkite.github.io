@@ -24,7 +24,7 @@ const Projects: React.FC = () => {
   const otherProjects = [
      {
       title: 'Daily Friend (일상친구)',
-      description: '사용자의 일상을 공유하고 소통하는 커뮤니티 SNS 플랫폼입니다.',
+      description: '일기장, 가계부, 일정관리, 중요 정보 메모 등 일상생활에 필요한 다양한 기능을 제공하는 서비스입니다.',
       tech: ['Spring Boot', 'React', 'MySQL'],
       github: 'https://github.com/Park-Jaeyeon/dailyfriend',
       external: '#'
