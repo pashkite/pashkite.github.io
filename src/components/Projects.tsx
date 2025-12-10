@@ -7,7 +7,7 @@ const featuredProjects = [
     description:
       '금융 데이터를 시각화하고 분석하여 사용자에게 인사이트를 제공하는 핀테크 서비스입니다. 복잡한 금융 정보를 직관적인 차트와 리포트로 제공합니다.',
     tech: ['React', 'TypeScript', 'Chart.js', 'Spring Boot'],
-    github: 'https://github.com/Park-Jaeyeon',
+    github: 'https://github.com/ashkite',
     external: '#',
     image: '/image/finble.png',
   },
@@ -35,7 +35,7 @@ const otherProjects = [
     title: 'Chatbot Service',
     description: 'LLM을 활용한 지능형 상담 챗봇 서비스입니다.',
     tech: ['Python', 'LangChain', 'OpenAI API'],
-    github: 'https://github.com/Park-Jaeyeon',
+    github: 'https://github.com/ashkite',
     external: '#',
   },
 ];

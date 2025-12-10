@@ -31,7 +31,7 @@ const Contact: React.FC = () => {
         </div>
 
         <div className="flex justify-center space-x-8 mb-10">
-          <a href="https://github.com/Park-Jaeyeon" className="text-slate hover:text-green transition-colors" aria-label="GitHub">
+          <a href="https://github.com/ashkite" className="text-slate hover:text-green transition-colors" aria-label="GitHub">
             <Github size={20} />
           </a>
           <a href="https://www.linkedin.com" className="text-slate hover:text-green transition-colors" aria-label="LinkedIn">
