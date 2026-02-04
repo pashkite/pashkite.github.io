@@ -70,6 +70,16 @@ const otherProjects: Project[] = [
 ];
 
 const Projects: React.FC = () => {
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+
+  const openProject = (project: Project) => {
+    setActiveProject(project);
+  };
+
+  const closeProject = () => {
+    setActiveProject(null);
+  };
+
   return (
     <section id="projects" className="w-full" aria-labelledby="projects-heading">
       <div className="flex items-center mb-12 animate-fade-in-up">
@@ -85,6 +95,15 @@ const Projects: React.FC = () => {
           <div
             key={project.title}
             className={`relative grid grid-cols-1 md:grid-cols-12 gap-6 items-start ${index % 2 !== 0 ? 'md:text-left' : 'md:text-right'}`}
+            role="button"
+            tabIndex={0}
+            onClick={() => openProject(project)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openProject(project);
+              }
+            }}
           >
             <div className={`col-span-12 md:col-span-6 sticky top-24 ${index % 2 !== 0 ? 'md:col-start-7 order-last md:order-first' : ''}`}>
               <div className="relative h-80 rounded-2xl overflow-hidden border border-lightest-navy/50 bg-light-navy/60 shadow-xl group">
@@ -138,22 +157,18 @@ const Projects: React.FC = () => {
                 ))}
               </ul>
               <div className={`flex items-center gap-4 ${index % 2 === 0 ? 'justify-end' : 'justify-start'}`}>
-                <a
-                  href={project.github}
-                  className="text-slate hover:text-green transition-colors"
-                  aria-label={`${project.title} GitHub`}
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 text-sm font-mono text-green border border-green/60 px-4 py-2 rounded-full hover:bg-green/10 transition-colors"
+                  aria-label={`${project.title} 프로젝트 상세 보기`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    openProject(project);
+                  }}
                 >
-                  <Github size={20} />
-                </a>
-                {project.external !== '#' && (
-                  <a
-                    href={project.external}
-                    className="text-slate hover:text-green transition-colors"
-                    aria-label={`${project.title} live link`}
-                  >
-                    <ExternalLink size={20} />
-                  </a>
-                )}
+                  자세히 보기
+                  <ExternalLink size={14} />
+                </button>
               </div>
             </div>
           </div>
@@ -171,27 +186,29 @@ const Projects: React.FC = () => {
             key={project.title}
             className="bg-light-navy/70 border border-lightest-navy/50 p-7 rounded-2xl shadow-lg hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full group"
             style={{ animationDelay: `${index * 60}ms` }}
+            role="button"
+            tabIndex={0}
+            onClick={() => openProject(project)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openProject(project);
+              }
+            }}
           >
             <div className="flex justify-between items-center mb-6">
               <Folder size={36} className="text-green group-hover:text-green/80 transition-colors" />
-              <div className="flex space-x-4">
-                <a
-                  href={project.github}
-                  className="text-slate hover:text-green transition-colors"
-                  aria-label={`${project.title} GitHub`}
-                >
-                  <Github size={18} />
-                </a>
-                {project.external !== '#' && (
-                  <a
-                    href={project.external}
-                    className="text-slate hover:text-green transition-colors"
-                    aria-label={`${project.title} live link`}
-                  >
-                    <ExternalLink size={18} />
-                  </a>
-                )}
-              </div>
+              <button
+                type="button"
+                className="text-xs font-mono text-green border border-green/50 px-3 py-1 rounded-full hover:bg-green/10 transition-colors"
+                aria-label={`${project.title} 프로젝트 상세 보기`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  openProject(project);
+                }}
+              >
+                자세히 보기
+              </button>
             </div>
 
             <h3 className="text-xl font-bold text-lightest-slate mb-2 group-hover:text-green transition-colors">{project.title}</h3>
@@ -231,6 +248,104 @@ const Projects: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {activeProject && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center bg-navy/90 px-4 py-12 overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="project-detail-title"
+          onClick={closeProject}
+        >
+          <div
+            className="w-full max-w-3xl bg-light-navy/90 border border-lightest-navy/60 rounded-3xl p-8 shadow-2xl relative"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="absolute top-5 right-5 text-slate hover:text-green transition-colors"
+              aria-label="프로젝트 상세 닫기"
+              onClick={closeProject}
+            >
+              ×
+            </button>
+
+            <div className="flex flex-col gap-6">
+              {activeProject.image && (
+                <div className="w-full h-64 rounded-2xl overflow-hidden border border-lightest-navy/50">
+                  <img src={activeProject.image} alt={activeProject.title} className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              <div>
+                <p className="font-mono text-green text-xs mb-2">Project Detail</p>
+                <h3 id="project-detail-title" className="text-3xl font-bold text-lightest-slate mb-4">
+                  {activeProject.title}
+                </h3>
+                <p className="text-slate leading-relaxed">{activeProject.description}</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate">
+                <div className="flex items-center gap-2">
+                  <Calendar size={16} className="text-green" />
+                  <span>{activeProject.period}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users size={16} className="text-green" />
+                  <span>{activeProject.team}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Folder size={16} className="text-green" />
+                  <span className="font-semibold text-lightest-slate">{activeProject.role}</span>
+                </div>
+              </div>
+
+              {activeProject.architecture && (
+                <div className="rounded-2xl border border-green/20 bg-navy/50 p-5">
+                  <div className="flex items-center gap-2 mb-2 text-green font-mono text-xs">
+                    <Server size={14} />
+                    <span>System Architecture</span>
+                  </div>
+                  <p className="text-xs text-light-slate leading-relaxed">{activeProject.architecture}</p>
+                </div>
+              )}
+
+              <ul className="flex flex-wrap gap-2 text-slate font-mono text-xs">
+                {activeProject.tech.map((tech) => (
+                  <li key={tech} className="px-3 py-1 rounded-full bg-navy/70 border border-lightest-navy/40">
+                    {tech}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-wrap gap-4">
+                <a
+                  href={activeProject.github}
+                  className="inline-flex items-center gap-2 text-slate hover:text-green transition-colors font-mono text-sm"
+                  aria-label={`${activeProject.title} GitHub`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Github size={18} />
+                  GitHub 보기
+                </a>
+                {activeProject.external !== '#' && (
+                  <a
+                    href={activeProject.external}
+                    className="inline-flex items-center gap-2 text-slate hover:text-green transition-colors font-mono text-sm"
+                    aria-label={`${activeProject.title} live link`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <ExternalLink size={18} />
+                    서비스 보기
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
