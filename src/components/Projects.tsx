@@ -99,21 +99,34 @@ const Projects: React.FC = () => {
     setActiveProject(project);
   };
 
-  const closeProjectDetail = () => {
+  const returnToList = () => {
     setActiveProject(null);
+    requestAnimationFrame(() => {
+      const section = document.getElementById('projects');
+      section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   };
 
   if (activeProject) {
     return (
-      <section id="projects" className="w-full" aria-labelledby="projects-detail-heading">
-        <div className="flex items-center mb-10">
-          <button
-            type="button"
-            className="mr-4 text-sm font-mono text-green border border-green/50 px-4 py-2 rounded-full hover:bg-green/10 transition-colors"
-            onClick={closeProjectDetail}
-          >
-            ← 프로젝트 목록
-          </button>
+      <section id="projects" className="w-full pt-24 md:pt-28" aria-labelledby="projects-detail-heading">
+        <div className="flex flex-col gap-4 mb-10 sm:flex-row sm:items-center">
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              className="text-sm font-mono text-green border border-green/50 px-4 py-2 rounded-full hover:bg-green/10 transition-colors"
+              onClick={returnToList}
+            >
+              ← 목록으로
+            </button>
+            <button
+              type="button"
+              className="text-sm font-mono text-slate border border-lightest-navy/60 px-4 py-2 rounded-full hover:text-green hover:border-green/60 transition-colors"
+              onClick={returnToList}
+            >
+              이전으로
+            </button>
+          </div>
           <div className="flex-1 h-[1px] bg-lightest-navy" />
         </div>
 
@@ -237,7 +250,7 @@ const Projects: React.FC = () => {
               <p className="font-mono text-green text-sm mb-2">Featured Project</p>
               <h3 className="text-2xl font-bold text-lightest-slate mb-4">{project.title}</h3>
 
-              <div className={`bg-light-navy/90 text-slate p-6 rounded-xl text-sm leading-relaxed border border-lightest-navy/50 mb-5 shadow-lg backdrop-blur-sm ${index % 2 === 0 ? 'md:-ml-16' : 'md:-mr-16'}`}>
+              <div className="bg-light-navy/90 text-slate p-6 rounded-xl text-sm leading-relaxed border border-lightest-navy/50 mb-5 shadow-lg backdrop-blur-sm">
                 {project.description}
               </div>
 
