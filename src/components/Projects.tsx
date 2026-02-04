@@ -69,7 +69,134 @@ const otherProjects: Project[] = [
   },
 ];
 
+const githubRepos = [
+  {
+    name: 'Finble',
+    description: '금융 데이터를 수집·가공해 시각화 리포트를 제공하는 핀테크 서비스 백엔드.',
+    href: 'https://github.com/ashkite/Finble',
+  },
+  {
+    name: 'Pill-Pack',
+    description: '약품 정보 검색과 복용 알림, 상호작용 분석을 제공하는 헬스케어 서비스.',
+    href: 'https://github.com/ashkite/Podo-News',
+  },
+  {
+    name: 'Daily Friend (일상친구)',
+    description: '일기, 가계부, 일정, 메모를 통합 관리하는 개인용 라이프 관리 서비스.',
+    href: 'https://github.com/ashkite/dailyfriend',
+  },
+  {
+    name: 'Chatbot Service',
+    description: 'RAG 파이프라인으로 정확도를 높인 LLM 기반 상담 챗봇 서비스.',
+    href: 'https://github.com/ashkite/Chatbot-Service',
+  },
+];
+
 const Projects: React.FC = () => {
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+
+  const openProjectDetail = (project: Project) => {
+    setActiveProject(project);
+  };
+
+  const closeProjectDetail = () => {
+    setActiveProject(null);
+  };
+
+  if (activeProject) {
+    return (
+      <section id="projects" className="w-full" aria-labelledby="projects-detail-heading">
+        <div className="flex items-center mb-10">
+          <button
+            type="button"
+            className="mr-4 text-sm font-mono text-green border border-green/50 px-4 py-2 rounded-full hover:bg-green/10 transition-colors"
+            onClick={closeProjectDetail}
+          >
+            ← 프로젝트 목록
+          </button>
+          <div className="flex-1 h-[1px] bg-lightest-navy" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <div className="space-y-6">
+            {activeProject.image && (
+              <div className="w-full h-80 rounded-2xl overflow-hidden border border-lightest-navy/50 bg-light-navy/60">
+                <img src={activeProject.image} alt={activeProject.title} className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div>
+              <p className="font-mono text-green text-xs mb-2">Project Detail</p>
+              <h2 id="projects-detail-heading" className="text-3xl font-bold text-lightest-slate mb-4">
+                {activeProject.title}
+              </h2>
+              <p className="text-slate leading-relaxed">{activeProject.description}</p>
+            </div>
+            {activeProject.architecture && (
+              <div className="rounded-2xl border border-green/20 bg-navy/50 p-5">
+                <div className="flex items-center gap-2 mb-2 text-green font-mono text-xs">
+                  <Server size={14} />
+                  <span>System Architecture</span>
+                </div>
+                <p className="text-xs text-light-slate leading-relaxed">{activeProject.architecture}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-6">
+            <div className="rounded-2xl border border-lightest-navy/50 bg-light-navy/70 p-6 space-y-4">
+              <div className="flex items-center gap-3 text-slate text-sm">
+                <Calendar size={16} className="text-green" />
+                <span>{activeProject.period}</span>
+              </div>
+              <div className="flex items-center gap-3 text-slate text-sm">
+                <Users size={16} className="text-green" />
+                <span>{activeProject.team}</span>
+              </div>
+              <div className="flex items-center gap-3 text-slate text-sm">
+                <Folder size={16} className="text-green" />
+                <span className="font-semibold text-lightest-slate">{activeProject.role}</span>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-mono text-green mb-3">Tech Stack</h3>
+              <ul className="flex flex-wrap gap-2 text-slate font-mono text-xs">
+                {activeProject.tech.map((tech) => (
+                  <li key={tech} className="px-3 py-1 rounded-full bg-navy/70 border border-lightest-navy/40">
+                    {tech}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              <a
+                href={activeProject.github}
+                className="inline-flex items-center gap-2 text-sm font-mono text-green border border-green/60 px-4 py-2 rounded-full hover:bg-green/10 transition-colors"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Github size={16} />
+                GitHub 바로가기
+              </a>
+              {activeProject.external !== '#' && (
+                <a
+                  href={activeProject.external}
+                  className="inline-flex items-center gap-2 text-sm font-mono text-slate border border-lightest-navy/60 px-4 py-2 rounded-full hover:text-green hover:border-green/60 transition-colors"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <ExternalLink size={16} />
+                  서비스 보기
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="projects" className="w-full" aria-labelledby="projects-heading">
       <div className="flex items-center mb-12 animate-fade-in-up">
@@ -84,7 +211,16 @@ const Projects: React.FC = () => {
         {featuredProjects.map((project, index) => (
           <div
             key={project.title}
-            className={`relative grid grid-cols-1 md:grid-cols-12 gap-6 items-start ${index % 2 !== 0 ? 'md:text-left' : 'md:text-right'}`}
+            className={`relative grid grid-cols-1 md:grid-cols-12 gap-6 items-start cursor-pointer ${index % 2 !== 0 ? 'md:text-left' : 'md:text-right'}`}
+            role="button"
+            tabIndex={0}
+            onClick={() => openProjectDetail(project)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openProjectDetail(project);
+              }
+            }}
           >
             <div className={`col-span-12 md:col-span-6 sticky top-24 ${index % 2 !== 0 ? 'md:col-start-7 order-last md:order-first' : ''}`}>
               <div className="relative h-80 rounded-2xl overflow-hidden border border-lightest-navy/50 bg-light-navy/60 shadow-xl group">
@@ -142,6 +278,9 @@ const Projects: React.FC = () => {
                   href={project.github}
                   className="text-slate hover:text-green transition-colors"
                   aria-label={`${project.title} GitHub`}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(event) => event.stopPropagation()}
                 >
                   <Github size={20} />
                 </a>
@@ -150,6 +289,9 @@ const Projects: React.FC = () => {
                     href={project.external}
                     className="text-slate hover:text-green transition-colors"
                     aria-label={`${project.title} live link`}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(event) => event.stopPropagation()}
                   >
                     <ExternalLink size={20} />
                   </a>
@@ -169,8 +311,17 @@ const Projects: React.FC = () => {
         {otherProjects.map((project, index) => (
           <div
             key={project.title}
-            className="bg-light-navy/70 border border-lightest-navy/50 p-7 rounded-2xl shadow-lg hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full group"
+            className="bg-light-navy/70 border border-lightest-navy/50 p-7 rounded-2xl shadow-lg hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full group cursor-pointer"
             style={{ animationDelay: `${index * 60}ms` }}
+            role="button"
+            tabIndex={0}
+            onClick={() => openProjectDetail(project)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openProjectDetail(project);
+              }
+            }}
           >
             <div className="flex justify-between items-center mb-6">
               <Folder size={36} className="text-green group-hover:text-green/80 transition-colors" />
@@ -179,6 +330,9 @@ const Projects: React.FC = () => {
                   href={project.github}
                   className="text-slate hover:text-green transition-colors"
                   aria-label={`${project.title} GitHub`}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(event) => event.stopPropagation()}
                 >
                   <Github size={18} />
                 </a>
@@ -187,6 +341,9 @@ const Projects: React.FC = () => {
                     href={project.external}
                     className="text-slate hover:text-green transition-colors"
                     aria-label={`${project.title} live link`}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(event) => event.stopPropagation()}
                   >
                     <ExternalLink size={18} />
                   </a>
@@ -231,6 +388,35 @@ const Projects: React.FC = () => {
           </div>
         ))}
       </div>
+
+      <div className="mt-20">
+        <div className="flex items-center mb-8">
+          <span className="text-green font-mono text-sm mr-2">GitHub</span>
+          <h3 className="text-2xl font-bold text-lightest-slate">저장소 요약</h3>
+          <div className="h-[1px] w-full bg-lightest-navy ml-6" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {githubRepos.map((repo) => (
+            <a
+              key={repo.name}
+              href={repo.href}
+              className="group flex flex-col gap-3 rounded-2xl border border-lightest-navy/50 bg-light-navy/60 p-6 hover:-translate-y-1 transition-transform"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <div className="flex items-center justify-between">
+                <h4 className="text-lg font-semibold text-lightest-slate group-hover:text-green transition-colors">
+                  {repo.name}
+                </h4>
+                <Github size={18} className="text-slate group-hover:text-green transition-colors" />
+              </div>
+              <p className="text-sm text-slate leading-relaxed">{repo.description}</p>
+              <span className="text-xs font-mono text-green">GitHub 바로가기</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
     </section>
   );
 };
