@@ -91,33 +91,6 @@ function App() {
     };
   }, []);
 
-  const projects = [
-    {
-      number: 'PROJECT 01',
-      title: 'Finble',
-      description:
-        '금융 데이터를 시각화하고 분석하여 사용자에게 인사이트를 제공하는 핀테크 서비스입니다. 복잡한 금융 정보를 직관적인 차트와 리포트로 제공합니다.',
-      tags: ['React', 'TypeScript', 'Chart.js', 'Spring Boot'],
-      link: 'https://github.com/ashkite/Finble',
-    },
-    {
-      number: 'PROJECT 02',
-      title: 'Pill-Pack',
-      description:
-        '약품 정보를 쉽게 검색하고 관리할 수 있는 헬스케어 플랫폼입니다. 사용자 복용 약을 등록하고 알림을 받으며, 상호작용 정보도 함께 제공합니다.',
-      tags: ['Java', 'Spring Boot', 'JPA', 'MySQL'],
-      link: 'https://github.com/ashkite/Podo-News',
-    },
-    {
-      number: 'PROJECT 03',
-      title: 'Daily Friend',
-      description:
-        '일기장, 가계부, 일정관리, 중요 정보 메모 등 일상생활에 필요한 다양한 기능을 제공하는 서비스입니다.',
-      tags: ['Spring Boot', 'React', 'MySQL'],
-      link: 'https://github.com/ashkite/dailyfriend',
-    },
-  ];
-
   const skills = [
     {
       number: '01',
@@ -241,9 +214,11 @@ function App() {
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="project-details">
+      <section id="project-details">
+        <div className="container">
           <div className="section-header scroll-animate">
             <div className="section-label">프로젝트 상세</div>
             <h2 className="section-title">Project Highlights</h2>
