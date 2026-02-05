@@ -1,5 +1,38 @@
 import { useEffect } from 'react';
 
+const projects = [
+  {
+    id: 'finble',
+    title: 'Finble 리서치 플랫폼',
+    summary:
+      '리서치 데이터 자동화 수집과 분석을 위한 플랫폼. 대시보드 중심의 UX로 리서치 워크플로를 최적화했습니다.',
+    detail:
+      '클라이언트 리서치 프로젝트를 빠르게 시작할 수 있도록 설문 설계, 수집, 분석 과정을 하나의 플로우로 통합했습니다.',
+    image: '/image/finble.png',
+    tags: ['React', 'TypeScript', 'Analytics'],
+  },
+  {
+    id: 'pill-pack',
+    title: 'Pill Pack 모바일 경험',
+    summary:
+      '건강 기록과 복약 알림을 한 곳에서 관리하는 모바일 서비스. 정보 구조를 단순화해 접근성을 높였습니다.',
+    detail:
+      '사용자 인터뷰 결과를 반영해 복약 알림, 히스토리, 캘린더 뷰를 재구성하고 핵심 정보를 카드 레이아웃으로 재배치했습니다.',
+    image: '/image/pill_pack.png',
+    tags: ['UI/UX', 'Product Design', 'Figma'],
+  },
+  {
+    id: 'studio',
+    title: '브랜드 스튜디오 웹사이트',
+    summary:
+      '브랜드의 비주얼 톤을 살린 마케팅 사이트. 인터랙션 중심의 모션으로 몰입감을 강화했습니다.',
+    detail:
+      '브랜드 컬러 시스템과 모션 가이드를 정리해 히어로/포트폴리오/문의 섹션을 단계적으로 연결했습니다.',
+    image: '/image/finble.png',
+    tags: ['Next.js', 'GSAP', 'Vercel'],
+  },
+];
+
 function App() {
   useEffect(() => {
     const anchors = document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]');
@@ -23,13 +56,14 @@ function App() {
       rootMargin: '0px 0px -50px 0px',
     };
 
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver((entries, observerInstance) => {
       entries.forEach((entry, index) => {
         if (entry.isIntersecting) {
           const target = entry.target as HTMLElement;
           window.setTimeout(() => {
             target.classList.add('visible');
           }, index * 100);
+          observerInstance.unobserve(entry.target);
         }
       });
     }, observerOptions);
@@ -121,51 +155,64 @@ function App() {
             <p className="section-description">지금까지 작업한 주요 프로젝트들을 소개합니다.</p>
           </div>
           <div className="projects-grid">
-            <div className="project-card scroll-animate">
-              <div className="project-image">🚀</div>
-              <div className="project-content">
-                <h3 className="project-title">프로젝트 1</h3>
-                <p className="project-description">
-                  혁신적인 웹 애플리케이션 개발 프로젝트. 사용자 경험을 극대화하기 위한 다양한 기술을
-                  적용했습니다.
-                </p>
-                <div className="project-tags">
-                  <span className="tag">React</span>
-                  <span className="tag">TypeScript</span>
-                  <span className="tag">Node.js</span>
+            {projects.map((project) => (
+              <div key={project.id} className="project-card scroll-animate">
+                <div className="project-image">
+                  <img src={project.image} alt={project.title} />
+                </div>
+                <div className="project-content">
+                  <h3 className="project-title">{project.title}</h3>
+                  <p className="project-description">{project.summary}</p>
+                  <div className="project-tags">
+                    {project.tags.map((tag) => (
+                      <span key={tag} className="tag">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <a className="project-link" href={`#project-${project.id}`}>
+                    프로젝트 상세보기
+                  </a>
                 </div>
               </div>
-            </div>
-            <div className="project-card scroll-animate">
-              <div className="project-image">🎯</div>
-              <div className="project-content">
-                <h3 className="project-title">프로젝트 2</h3>
-                <p className="project-description">
-                  데이터 시각화를 중심으로 한 대시보드 프로젝트. 복잡한 데이터를 직관적으로
-                  표현했습니다.
-                </p>
-                <div className="project-tags">
-                  <span className="tag">Vue.js</span>
-                  <span className="tag">D3.js</span>
-                  <span className="tag">Python</span>
+            ))}
+          </div>
+        </section>
+
+        <section id="project-details">
+          <div className="section-header scroll-animate">
+            <div className="section-label">프로젝트 상세</div>
+            <h2 className="section-title">Project Highlights</h2>
+            <p className="section-description">
+              클릭한 프로젝트의 흐름을 이어 볼 수 있도록 상세 내용을 정리했습니다.
+            </p>
+          </div>
+          <div className="details-grid">
+            {projects.map((project) => (
+              <article
+                key={`detail-${project.id}`}
+                id={`project-${project.id}`}
+                className="detail-card scroll-animate"
+              >
+                <div className="detail-media">
+                  <img src={project.image} alt={project.title} />
                 </div>
-              </div>
-            </div>
-            <div className="project-card scroll-animate">
-              <div className="project-image">✨</div>
-              <div className="project-content">
-                <h3 className="project-title">프로젝트 3</h3>
-                <p className="project-description">
-                  모바일 퍼스트 접근으로 개발한 반응형 웹사이트. 모든 디바이스에서 완벽한 경험을
-                  제공합니다.
-                </p>
-                <div className="project-tags">
-                  <span className="tag">HTML5</span>
-                  <span className="tag">CSS3</span>
-                  <span className="tag">JavaScript</span>
+                <div className="detail-content">
+                  <h3 className="detail-title">{project.title}</h3>
+                  <p className="detail-description">{project.detail}</p>
+                  <div className="detail-tags">
+                    {project.tags.map((tag) => (
+                      <span key={`${project.id}-${tag}`} className="tag">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <a href="#contact" className="detail-link">
+                    프로젝트 문의하기
+                  </a>
                 </div>
-              </div>
-            </div>
+              </article>
+            ))}
           </div>
         </section>
 

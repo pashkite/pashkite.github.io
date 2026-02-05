@@ -316,12 +316,15 @@ section {
   width: 100%;
   height: 250px;
   background: linear-gradient(135deg, var(--secondary), var(--accent));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
   position: relative;
   overflow: hidden;
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .project-image::after {
@@ -360,6 +363,7 @@ section {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .tag {
@@ -370,6 +374,96 @@ section {
   font-size: 0.85rem;
   color: var(--secondary);
   font-weight: 500;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.project-link::after {
+  content: '→';
+  font-size: 1.2rem;
+}
+
+.project-link:hover {
+  color: var(--secondary);
+  gap: 0.8rem;
+}
+
+/* Project Details */
+.details-grid {
+  display: grid;
+  gap: 3rem;
+}
+
+.detail-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 2.5rem;
+  align-items: center;
+  padding: 2.5rem;
+  border-radius: 24px;
+  border: 1px solid var(--card-border);
+  background: rgba(10, 14, 39, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.detail-media {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+}
+
+.detail-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detail-title {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.detail-description {
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.detail-link {
+  align-self: flex-start;
+  padding: 0.7rem 1.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--secondary);
+  color: var(--secondary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.detail-link:hover {
+  background: var(--secondary);
+  color: #0a0e27;
 }
 
 /* Contact Section */
@@ -445,6 +539,12 @@ footer {
 }
 
 /* Responsive */
+@media (max-width: 900px) {
+  .detail-card {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 0 1.5rem;
@@ -474,5 +574,10 @@ footer {
 
   .social-links {
     gap: 1rem;
+  }
+
+  .detail-link {
+    width: 100%;
+    text-align: center;
   }
 }
