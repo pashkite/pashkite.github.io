@@ -52,8 +52,8 @@ function App() {
     });
 
     const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px',
+      threshold: 0.2,
+      rootMargin: '0px 0px -60px 0px',
     };
 
     const observer = new IntersectionObserver((entries, observerInstance) => {
@@ -68,18 +68,19 @@ function App() {
       });
     }, observerOptions);
 
-    const animatedElements = document.querySelectorAll('.scroll-animate');
+    const animatedElements = document.querySelectorAll('.reveal');
     animatedElements.forEach((element) => observer.observe(element));
 
     const handleScroll = () => {
       const scrolled = window.pageYOffset;
-      const background = document.querySelector<HTMLElement>('.bg-animation');
-      if (background) {
-        background.style.transform = `translateY(${scrolled * 0.5}px)`;
+      const heroVisual = document.querySelector<HTMLElement>('.hero-visual');
+      if (heroVisual) {
+        heroVisual.style.transform = `translateY(${scrolled * 0.2}px)`;
       }
     };
 
     window.addEventListener('scroll', handleScroll);
+    handleScroll();
 
     return () => {
       anchors.forEach((anchor) => {
@@ -90,69 +91,132 @@ function App() {
     };
   }, []);
 
-  return (
-    <div>
-      <div className="bg-animation" />
+  const projects = [
+    {
+      number: 'PROJECT 01',
+      title: 'Finble',
+      description:
+        '금융 데이터를 시각화하고 분석하여 사용자에게 인사이트를 제공하는 핀테크 서비스입니다. 복잡한 금융 정보를 직관적인 차트와 리포트로 제공합니다.',
+      tags: ['React', 'TypeScript', 'Chart.js', 'Spring Boot'],
+      link: 'https://github.com/ashkite/Finble',
+    },
+    {
+      number: 'PROJECT 02',
+      title: 'Pill-Pack',
+      description:
+        '약품 정보를 쉽게 검색하고 관리할 수 있는 헬스케어 플랫폼입니다. 사용자 복용 약을 등록하고 알림을 받으며, 상호작용 정보도 함께 제공합니다.',
+      tags: ['Java', 'Spring Boot', 'JPA', 'MySQL'],
+      link: 'https://github.com/ashkite/Podo-News',
+    },
+    {
+      number: 'PROJECT 03',
+      title: 'Daily Friend',
+      description:
+        '일기장, 가계부, 일정관리, 중요 정보 메모 등 일상생활에 필요한 다양한 기능을 제공하는 서비스입니다.',
+      tags: ['Spring Boot', 'React', 'MySQL'],
+      link: 'https://github.com/ashkite/dailyfriend',
+    },
+  ];
 
-      <div className="container">
-        <section className="hero">
-          <div className="hero-content">
-            <div className="hero-label">포트폴리오</div>
-            <h1 className="hero-title">Park Jaeyeon</h1>
-            <p className="hero-subtitle">Creative Developer & Designer</p>
-            <p className="hero-description">
-              혁신적인 아이디어를 현실로 만드는 개발자입니다. 사용자 경험을 최우선으로 생각하며,
-              아름답고 직관적인 인터페이스를 구축합니다.
-            </p>
-            <div className="cta-group">
-              <a href="#projects" className="btn btn-primary">
-                프로젝트 보기
-              </a>
-              <a href="#contact" className="btn btn-secondary">
-                연락하기
-              </a>
+  const skills = [
+    {
+      number: '01',
+      title: 'Frontend Development',
+      description: '모던 웹 기술로 반응형이고 인터랙티브한 사용자 인터페이스를 구현합니다.',
+      items: ['React / Next.js', 'TypeScript', 'Chart.js / D3.js'],
+    },
+    {
+      number: '02',
+      title: 'UI/UX Design',
+      description: '사용자 경험을 최우선으로 생각하며 직관적인 디자인을 설계합니다.',
+      items: ['Figma / Adobe XD', 'Design Systems', 'Prototyping'],
+    },
+    {
+      number: '03',
+      title: 'Backend Development',
+      description: '확장 가능하고 안정적인 서버 인프라를 구축합니다.',
+      items: ['Spring Boot', 'Node.js / Express', 'MySQL / PostgreSQL'],
+    },
+  ];
+
+  return (
+    <div className="page">
+      <nav>
+        <div className="logo">PJY</div>
+        <ul className="nav-links">
+          <li>
+            <a href="#work">Work</a>
+          </li>
+          <li>
+            <a href="#skills">Skills</a>
+          </li>
+          <li>
+            <a href="#contact">Contact</a>
+          </li>
+        </ul>
+      </nav>
+
+      <section className="hero">
+        <div className="container">
+          <div className="hero-grid">
+            <div className="hero-text">
+              <div className="hero-label">PORTFOLIO 2024</div>
+              <h1 className="hero-title">
+                Park<br />
+                <span className="gradient-text">Jaeyeon</span>
+              </h1>
+              <p className="hero-description">
+                창의적인 아이디어와 기술력을 결합하여 사용자 중심의 디지털 경험을 만들어갑니다.
+              </p>
+              <div className="hero-cta">
+                <a href="#work" className="btn btn-primary">
+                  View Projects
+                </a>
+                <a href="#contact" className="btn btn-secondary">
+                  Get In Touch
+                </a>
+              </div>
+            </div>
+            <div className="hero-visual">
+              <div className="visual-box" />
+              <div className="visual-box" />
+              <div className="visual-box" />
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="skills">
-          <div className="section-header scroll-animate">
-            <div className="section-label">전문 분야</div>
-            <h2 className="section-title">Skills</h2>
+      <section id="skills">
+        <div className="container">
+          <div className="section-header reveal">
+            <div className="section-number">01 / EXPERTISE</div>
+            <h2 className="section-title">What I Do</h2>
             <p className="section-description">
-              다양한 기술 스택과 도구를 활용하여 최고의 결과물을 만들어냅니다.
+              다양한 기술 스택과 창의적인 접근으로 프로젝트를 성공적으로 완성합니다.
             </p>
           </div>
           <div className="skills-grid">
-            <div className="skill-card scroll-animate">
-              <div className="skill-icon">💻</div>
-              <h3 className="skill-title">Frontend Development</h3>
-              <p className="skill-description">
-                React, Vue.js, TypeScript를 활용한 모던 웹 애플리케이션 개발
-              </p>
-            </div>
-            <div className="skill-card scroll-animate">
-              <div className="skill-icon">🎨</div>
-              <h3 className="skill-title">UI/UX Design</h3>
-              <p className="skill-description">
-                사용자 중심의 직관적이고 아름다운 인터페이스 디자인
-              </p>
-            </div>
-            <div className="skill-card scroll-animate">
-              <div className="skill-icon">⚙️</div>
-              <h3 className="skill-title">Backend Development</h3>
-              <p className="skill-description">
-                Node.js, Python을 활용한 견고하고 확장 가능한 서버 개발
-              </p>
-            </div>
+            {skills.map((skill) => (
+              <div key={skill.number} className="skill-card reveal">
+                <div className="skill-number">{skill.number}</div>
+                <h3 className="skill-title">{skill.title}</h3>
+                <p className="skill-description">{skill.description}</p>
+                <ul className="skill-list">
+                  {skill.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="projects">
-          <div className="section-header scroll-animate">
-            <div className="section-label">작업물</div>
-            <h2 className="section-title">Projects</h2>
-            <p className="section-description">지금까지 작업한 주요 프로젝트들을 소개합니다.</p>
+      <section id="work">
+        <div className="container">
+          <div className="section-header reveal">
+            <div className="section-number">02 / SELECTED WORKS</div>
+            <h2 className="section-title">Featured Projects</h2>
           </div>
           <div className="projects-grid">
             {projects.map((project) => (
@@ -214,41 +278,45 @@ function App() {
               </article>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="contact">
-          <div className="section-header scroll-animate">
-            <div className="section-label">연락</div>
-            <h2 className="section-title">Get In Touch</h2>
+      <section id="contact">
+        <div className="container">
+          <div className="contact-content reveal">
+            <h2 className="contact-title">Let's Work<br />Together</h2>
             <p className="section-description">
-              프로젝트 협업이나 문의사항이 있으시다면 언제든지 연락주세요.
+              새로운 프로젝트나 협업 기회가 있으시다면 언제든 연락주세요.
             </p>
-          </div>
-          <div className="contact-content scroll-animate">
-            <a href="mailto:your.email@example.com" className="contact-email">
-              your.email@example.com
+            <a href="mailto:jaeyoun310@gmail.com" className="contact-email">
+              jaeyoun310@gmail.com
             </a>
             <div className="social-links">
-              <a href="#" className="social-link" title="GitHub">
-                <span>📱</span>
+              <a href="https://github.com/ashkite" className="social-link" title="GitHub" target="_blank" rel="noreferrer">
+                <span>💻</span>
               </a>
-              <a href="#" className="social-link" title="LinkedIn">
+              <a href="https://www.linkedin.com" className="social-link" title="LinkedIn" target="_blank" rel="noreferrer">
                 <span>💼</span>
               </a>
-              <a href="#" className="social-link" title="Twitter">
-                <span>🐦</span>
+              <a href="https://www.behance.net" className="social-link" title="Behance" target="_blank" rel="noreferrer">
+                <span>🎨</span>
               </a>
-              <a href="#" className="social-link" title="Instagram">
-                <span>📷</span>
+              <a href="https://www.instagram.com" className="social-link" title="Instagram" target="_blank" rel="noreferrer">
+                <span>📸</span>
               </a>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
       <footer>
-        <div className="container">
-          <p>&copy; 2024 Park Jaeyeon. All rights reserved.</p>
+        <div className="container footer-content">
+          <p className="footer-text">&copy; 2024 Park Jaeyeon. All rights reserved.</p>
+          <div className="footer-links">
+            <a href="#work">Work</a>
+            <a href="#skills">Skills</a>
+            <a href="#contact">Contact</a>
+          </div>
         </div>
       </footer>
     </div>
