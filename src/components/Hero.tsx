@@ -2,135 +2,149 @@ import React from 'react';
 
 const Hero: React.FC = () => {
   return (
-    <section id="home" className="min-h-screen flex items-center py-20">
-      <div className="w-full grid lg:grid-cols-2 gap-12 items-center">
-        {/* Left: Main Content */}
-        <div className="space-y-8 order-2 lg:order-1">
-          <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span className="text-sm text-gray-300 font-mono">Available for work</span>
+    <section id="home" className="min-h-[85vh] flex items-center py-20">
+      <div className="w-full">
+        <div className="max-w-4xl space-y-12">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="text-sm text-gray-700 font-medium">Available for opportunities</span>
           </div>
 
-          <div className="space-y-4">
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-black text-white leading-none">
-              Park
-              <br />
-              <span className="gradient-text">Jaeyeon</span>
+          {/* Main heading */}
+          <div className="space-y-6">
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-gray-900 leading-tight">
+              안녕하세요,<br />
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                박재연
+              </span>
+              입니다
             </h1>
-            <div className="h-1 w-24 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full" />
+            <p className="text-2xl md:text-3xl text-gray-700 font-medium leading-relaxed">
+              사용자 중심의 인터페이스를 만드는<br />
+              <span className="text-blue-600">프론트엔드 개발자</span>입니다
+            </p>
           </div>
 
-          <p className="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-xl">
-            사용자 중심의 웹 경험을 만드는 <span className="text-cyan-400 font-semibold">풀스택 개발자</span>입니다.
+          {/* Description */}
+          <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
+            React와 TypeScript를 활용하여 직관적이고 아름다운 웹 경험을 만듭니다.
+            사용자 경험을 최우선으로 생각하며, 디테일한 UI 구현과 성능 최적화에 관심이 많습니다.
           </p>
 
-          <p className="text-gray-400 leading-relaxed max-w-xl">
-            문제 정의부터 해결까지, 명확한 커뮤니케이션과 섬세한 UI로 가치있는 서비스를 만듭니다.
-            React와 Spring Boot를 활용한 현대적인 웹 애플리케이션 개발에 열정을 가지고 있습니다.
-          </p>
-
-          <div className="flex flex-wrap gap-4 pt-4">
+          {/* CTA buttons */}
+          <div className="flex flex-wrap gap-4">
             <a
               href="#projects"
-              className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-xl font-semibold text-white overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50"
+              className="group px-8 py-4 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-all hover:scale-105 hover:shadow-xl flex items-center gap-2"
             >
-              <span className="relative z-10">프로젝트 보기</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+              프로젝트 보기
+              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
             </a>
             <a
               href="mailto:jaeyoun310@gmail.com"
-              className="px-8 py-4 glass rounded-xl font-semibold text-white hover:bg-white/10 transition-all"
+              className="px-8 py-4 bg-white border-2 border-gray-900 text-gray-900 rounded-xl font-semibold hover:bg-gray-50 transition-all"
             >
               연락하기
             </a>
           </div>
+
+          {/* Stats/Skills cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8">
+            {[
+              { label: 'React', desc: 'UI 라이브러리', icon: '⚛️' },
+              { label: 'TypeScript', desc: '타입 안정성', icon: '📘' },
+              { label: 'Responsive', desc: '반응형 디자인', icon: '📱' },
+              { label: 'Performance', desc: '최적화', icon: '⚡' },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="group p-6 bg-white rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all cursor-default"
+              >
+                <div className="text-3xl mb-3">{item.icon}</div>
+                <h3 className="font-semibold text-gray-900 mb-1">{item.label}</h3>
+                <p className="text-sm text-gray-500">{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Right: Interactive Card */}
-        <div className="order-1 lg:order-2">
-          <div className="relative group">
-            {/* Glow effect */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-3xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
-            
-            {/* Main card */}
-            <div className="relative glass rounded-3xl p-8 space-y-6">
-              {/* Profile section */}
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <div className="text-sm text-gray-400 font-mono">Full-Stack Developer</div>
-                  <div className="text-3xl font-bold text-white">박재연</div>
-                  <div className="text-gray-300">PAshKite</div>
-                </div>
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center text-2xl font-bold text-white">
-                  PJ
-                </div>
+        {/* Decorative element - profile card */}
+        <div className="absolute top-20 right-8 hidden xl:block">
+          <div className="w-80 bg-white rounded-3xl shadow-xl border border-gray-200 p-8 space-y-6">
+            {/* Profile header */}
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">박재연</h3>
+                <p className="text-gray-600 text-sm mt-1">Frontend Developer</p>
               </div>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                PJ
+              </div>
+            </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 py-6">
-                <div className="text-center space-y-1">
-                  <div className="text-2xl font-bold text-cyan-400">3+</div>
-                  <div className="text-xs text-gray-400">Years Coding</div>
-                </div>
-                <div className="text-center space-y-1">
-                  <div className="text-2xl font-bold text-purple-400">10+</div>
-                  <div className="text-xs text-gray-400">Projects</div>
-                </div>
-                <div className="text-center space-y-1">
-                  <div className="text-2xl font-bold text-pink-400">100%</div>
-                  <div className="text-xs text-gray-400">Passion</div>
-                </div>
-              </div>
+            {/* Divider */}
+            <div className="h-px bg-gray-200" />
 
-              {/* Tech stack tags */}
-              <div className="space-y-3">
-                <div className="text-sm text-gray-400 font-mono">Main Stack</div>
-                <div className="flex flex-wrap gap-2">
-                  {['React', 'TypeScript', 'Spring Boot', 'Tailwind', 'Git'].map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-gray-300 hover:bg-white/10 transition-colors cursor-default"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+            {/* Info */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span className="text-gray-700">Seoul, South Korea</span>
               </div>
+              <div className="flex items-center gap-3 text-sm">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span className="text-gray-700">SSAFY</span>
+              </div>
+            </div>
 
-              {/* Social links */}
-              <div className="flex gap-4 pt-4">
-                <a
-                  href="https://github.com/pashkite"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:bg-white/10 transition-all hover:scale-110"
-                  aria-label="GitHub"
-                >
-                  <svg className="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                  </svg>
-                </a>
-                <a
-                  href="mailto:jaeyoun310@gmail.com"
-                  className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:bg-white/10 transition-all hover:scale-110"
-                  aria-label="Email"
-                >
-                  <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </a>
+            {/* Tech stack */}
+            <div>
+              <p className="text-xs text-gray-500 mb-3 font-medium">TECH STACK</p>
+              <div className="flex flex-wrap gap-2">
+                {['React', 'TypeScript', 'Tailwind', 'Next.js', 'Git'].map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full font-medium"
+                  >
+                    {tech}
+                  </span>
+                ))}
               </div>
+            </div>
+
+            {/* Social links */}
+            <div className="flex gap-3 pt-2">
+              <a
+                href="https://github.com/pashkite"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-2 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors text-sm font-medium"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                </svg>
+                GitHub
+              </a>
+              <a
+                href="mailto:jaeyoun310@gmail.com"
+                className="flex-1 flex items-center justify-center gap-2 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors text-sm font-medium"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Email
+              </a>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-        <span className="text-xs text-gray-400 font-mono">Scroll Down</span>
-        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-        </svg>
       </div>
     </section>
   );
