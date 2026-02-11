@@ -1,436 +1,273 @@
 import React, { useState } from 'react';
-import { ExternalLink, Folder, Github, Users, Calendar, Server } from 'lucide-react';
 
 interface Project {
   title: string;
   description: string;
+  longDescription: string;
   tech: string[];
   github: string;
-  external: string;
+  demo?: string;
   image?: string;
   period: string;
   team: string;
   role: string;
-  architecture?: string;
+  highlights: string[];
 }
 
-const featuredProjects: Project[] = [
+const projects: Project[] = [
+  {
+    title: 'Aiders',
+    description: '실시간 응급 출동 및 병원 매칭 시스템',
+    longDescription: '응급 상황 발생 시 가장 가까운 구급차를 자동으로 배차하고, 환자 상태에 적합한 병원을 실시간으로 매칭하는 응급 의료 서비스입니다. WebSocket을 활용한 실시간 위치 추적과 병상 현황 파악으로 골든타임 확보에 기여합니다.',
+    tech: ['React', 'TypeScript', 'WebSocket', 'Spring Boot', 'MySQL', 'Redis'],
+    github: 'https://github.com/pashkite/Aiders',
+    image: '/image/aiders.png',
+    period: '2024.10 - 2024.11',
+    team: '6명 (FE 3, BE 3)',
+    role: 'Frontend Developer',
+    highlights: [
+      'WebSocket 기반 실시간 구급차 위치 추적 구현',
+      'Kakao Maps API를 활용한 최단거리 경로 계산',
+      '환자 상태별 병원 추천 알고리즘 프론트엔드 연동',
+      '반응형 관제 대시보드 UI/UX 설계 및 개발'
+    ]
+  },
   {
     title: 'Finble',
-    description:
-      '금융 데이터를 시각화하고 분석하여 사용자에게 인사이트를 제공하는 핀테크 서비스입니다. 복잡한 금융 정보를 직관적인 차트와 리포트로 제공합니다.',
-    tech: ['React', 'TypeScript', 'Chart.js', 'Spring Boot'],
-    github: 'https://github.com/ashkite/Finble',
-    external: '#',
+    description: '개인 자산 관리 및 금융 데이터 시각화 플랫폼',
+    longDescription: '사용자의 금융 데이터를 수집하여 직관적인 차트와 리포트로 제공하는 핀테크 서비스입니다. 복잡한 금융 정보를 한눈에 파악할 수 있도록 데이터 시각화에 중점을 두었습니다.',
+    tech: ['React', 'TypeScript', 'Chart.js', 'Recharts', 'Tailwind CSS'],
+    github: 'https://github.com/pashkite/Finble',
     image: '/image/finble.png',
-    period: '2023.03 - 2023.06',
-    team: '4명 (BE 2, FE 2)',
-    role: 'Backend Developer',
-    architecture: 'Spring Boot 기반의 Monolithic 아키텍처로 설계됨. 외부 금융 API와 연동하여 데이터를 수집 및 가공하고, Spring Security(JWT)를 통한 인증/인가 시스템 구축. Redis를 도입하여 데이터 캐싱 처리로 응답 속도 최적화.',
+    period: '2024.08 - 2024.09',
+    team: '4명 (FE 2, BE 2)',
+    role: 'Frontend Developer',
+    highlights: [
+      'Chart.js와 Recharts를 활용한 인터랙티브 차트 구현',
+      '자산 포트폴리오 시각화 및 추이 분석 기능',
+      '반응형 대시보드 레이아웃 설계',
+      '사용자 친화적인 데이터 필터링 인터페이스 개발'
+    ]
   },
   {
-    title: 'Pill-Pack',
-    description:
-      '약품 정보를 쉽게 검색하고 관리할 수 있는 헬스케어 플랫폼입니다. 사용자 복용 약을 등록하고 알림을 받으며, 상호작용 정보도 함께 제공합니다.',
-    tech: ['Java', 'Spring Boot', 'JPA', 'MySQL'],
-    github: 'https://github.com/ashkite/Podo-News',
-    external: '#',
-    image: '/image/pill_pack.png',
-    period: '2023.08 - 2023.10',
-    team: '3명 (BE 1, FE 2)',
-    role: 'Backend Lead',
-    architecture: '사용자 및 약품 관리를 위한 서비스 중심 설계. 상호작용 분석 엔진을 통해 약물 간 충돌 위험을 감지하며, Firebase cloud Messaging(FCM)을 활용한 알림 서비스 구축. RESTful API 설계 및 JPA를 활용한 효율적인 데이터 모델링.',
-  },
-];
-
-const otherProjects: Project[] = [
-  {
-    title: 'Daily Friend (일상친구)',
-    description:
-      '일기장, 가계부, 일정관리, 중요 정보 메모 등 일상생활에 필요한 다양한 기능을 제공하는 서비스입니다.',
-    tech: ['Spring Boot', 'React', 'MySQL'],
-    github: 'https://github.com/ashkite/dailyfriend',
-    external: '#',
-    period: '2022.12 - 2023.02',
-    team: '1명 (개인 프로젝트)',
-    role: 'Full Stack',
-    architecture: 'Controller-Service-Repository 레이어 패턴을 적용한 모듈형 구조. 일기, 금융, 일정 등 각 도메인을 독립적으로 관리 가능한 구조로 설계.',
+    title: 'Board Game Collection',
+    description: '보드게임 온라인 플랫폼',
+    longDescription: '다양한 보드게임을 웹에서 즐길 수 있는 멀티플레이어 게임 플랫폼입니다. WebSocket을 활용한 실시간 게임 진행과 턴 기반 로직 구현에 집중했습니다.',
+    tech: ['React', 'TypeScript', 'WebSocket', 'Zustand', 'Tailwind CSS'],
+    github: 'https://github.com/pashkite/board-game',
+    period: '2024.06 - 2024.07',
+    team: '2명 (FE 2)',
+    role: 'Frontend Developer',
+    highlights: [
+      'WebSocket 기반 실시간 게임 상태 동기화',
+      '턴 기반 게임 로직 및 애니메이션 구현',
+      'Zustand를 활용한 전역 상태 관리',
+      '게임별 커스텀 UI 컴포넌트 설계'
+    ]
   },
   {
-    title: 'Chatbot Service',
-    description: 'LLM을 활용한 지능형 상담 챗봇 서비스입니다.',
-    tech: ['Python', 'LangChain', 'OpenAI API'],
-    github: 'https://github.com/ashkite/Chatbot-Service',
-    external: '#',
-    period: '2024.01 - 2024.02',
-    team: '2명 (AI 1, BE 1)',
-    role: 'AI Engineer',
-    architecture: 'FastAPI 서버와 LangChain을 활용한 RAG(Retrieval-Augmented Generation) 파이프라인 구축. Vector DB를 활용하여 문맥 기반의 정확한 답변 생성.',
-  },
-];
-
-const githubRepos = [
-  {
-    name: 'Finble',
-    description: '금융 데이터를 수집·가공해 시각화 리포트를 제공하는 핀테크 서비스 백엔드.',
-    href: 'https://github.com/ashkite/Finble',
-  },
-  {
-    name: 'Pill-Pack',
-    description: '약품 정보 검색과 복용 알림, 상호작용 분석을 제공하는 헬스케어 서비스.',
-    href: 'https://github.com/ashkite/Podo-News',
-  },
-  {
-    name: 'Daily Friend (일상친구)',
-    description: '일기, 가계부, 일정, 메모를 통합 관리하는 개인용 라이프 관리 서비스.',
-    href: 'https://github.com/ashkite/dailyfriend',
-  },
-  {
-    name: 'Chatbot Service',
-    description: 'RAG 파이프라인으로 정확도를 높인 LLM 기반 상담 챗봇 서비스.',
-    href: 'https://github.com/ashkite/Chatbot-Service',
+    title: 'Portfolio Website',
+    description: '개인 포트폴리오 웹사이트',
+    longDescription: '프론트엔드 개발자로서의 역량을 보여주기 위한 개인 포트폴리오 사이트입니다. 미니멀한 디자인과 부드러운 애니메이션으로 사용자 경험을 개선했습니다.',
+    tech: ['React', 'TypeScript', 'Tailwind CSS', 'Vite'],
+    github: 'https://github.com/pashkite/pashkite.github.io',
+    demo: 'https://pashkite.github.io',
+    period: '2024.02 - 현재',
+    team: '1명 (개인)',
+    role: 'Frontend Developer',
+    highlights: [
+      '미니멀한 디자인 시스템 구축',
+      'CSS 애니메이션을 활용한 인터랙티브 요소',
+      '반응형 레이아웃 및 접근성 최적화',
+      'GitHub Pages 자동 배포 설정'
+    ]
   },
 ];
 
 const Projects: React.FC = () => {
-  const [activeProject, setActiveProject] = useState<Project | null>(null);
-
-  const openProjectDetail = (project: Project) => {
-    setActiveProject(project);
-  };
-
-  const returnToList = () => {
-    setActiveProject(null);
-    requestAnimationFrame(() => {
-      const section = document.getElementById('projects');
-      section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  };
-
-  if (activeProject) {
-    return (
-      <section id="projects" className="w-full pt-24 md:pt-28" aria-labelledby="projects-detail-heading">
-        <div className="flex flex-col gap-4 mb-10 sm:flex-row sm:items-center">
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              className="text-sm font-mono text-green border border-green/50 px-4 py-2 rounded-full hover:bg-green/10 transition-colors"
-              onClick={returnToList}
-            >
-              ← 목록으로
-            </button>
-            <button
-              type="button"
-              className="text-sm font-mono text-slate border border-lightest-navy/60 px-4 py-2 rounded-full hover:text-green hover:border-green/60 transition-colors"
-              onClick={returnToList}
-            >
-              이전으로
-            </button>
-          </div>
-          <div className="flex-1 h-[1px] bg-lightest-navy" />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-          <div className="space-y-6">
-            {activeProject.image && (
-              <div className="w-full h-80 rounded-2xl overflow-hidden border border-lightest-navy/50 bg-light-navy/60">
-                <img src={activeProject.image} alt={activeProject.title} className="w-full h-full object-cover" />
-              </div>
-            )}
-            <div>
-              <p className="font-mono text-green text-xs mb-2">Project Detail</p>
-              <h2 id="projects-detail-heading" className="text-3xl font-bold text-lightest-slate mb-4">
-                {activeProject.title}
-              </h2>
-              <p className="text-slate leading-relaxed">{activeProject.description}</p>
-            </div>
-            {activeProject.architecture && (
-              <div className="rounded-2xl border border-green/20 bg-navy/50 p-5">
-                <div className="flex items-center gap-2 mb-2 text-green font-mono text-xs">
-                  <Server size={14} />
-                  <span>System Architecture</span>
-                </div>
-                <p className="text-xs text-light-slate leading-relaxed">{activeProject.architecture}</p>
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-lightest-navy/50 bg-light-navy/70 p-6 space-y-4">
-              <div className="flex items-center gap-3 text-slate text-sm">
-                <Calendar size={16} className="text-green" />
-                <span>{activeProject.period}</span>
-              </div>
-              <div className="flex items-center gap-3 text-slate text-sm">
-                <Users size={16} className="text-green" />
-                <span>{activeProject.team}</span>
-              </div>
-              <div className="flex items-center gap-3 text-slate text-sm">
-                <Folder size={16} className="text-green" />
-                <span className="font-semibold text-lightest-slate">{activeProject.role}</span>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-mono text-green mb-3">Tech Stack</h3>
-              <ul className="flex flex-wrap gap-2 text-slate font-mono text-xs">
-                {activeProject.tech.map((tech) => (
-                  <li key={tech} className="px-3 py-1 rounded-full bg-navy/70 border border-lightest-navy/40">
-                    {tech}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="flex flex-wrap gap-4">
-              <a
-                href={activeProject.github}
-                className="inline-flex items-center gap-2 text-sm font-mono text-green border border-green/60 px-4 py-2 rounded-full hover:bg-green/10 transition-colors"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Github size={16} />
-                GitHub 바로가기
-              </a>
-              {activeProject.external !== '#' && (
-                <a
-                  href={activeProject.external}
-                  className="inline-flex items-center gap-2 text-sm font-mono text-slate border border-lightest-navy/60 px-4 py-2 rounded-full hover:text-green hover:border-green/60 transition-colors"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <ExternalLink size={16} />
-                  서비스 보기
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <section id="projects" className="w-full" aria-labelledby="projects-heading">
-      <div className="flex items-center mb-12 animate-fade-in-up">
-        <span className="text-green font-mono text-xl mr-2">03.</span>
-        <h2 id="projects-heading" className="text-3xl font-bold text-lightest-slate whitespace-nowrap">
-          주요 프로젝트
-        </h2>
-        <div className="h-[1px] w-full bg-lightest-navy ml-6" />
-      </div>
+    <>
+      <section id="projects" className="py-20">
+        <div className="mb-12">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Projects</h2>
+          <p className="text-lg text-gray-600">제가 작업한 프로젝트들입니다. 각 카드를 클릭하면 자세한 내용을 확인할 수 있습니다.</p>
+        </div>
 
-      <div className="space-y-32 mb-24">
-        {featuredProjects.map((project, index) => (
-          <div
-            key={project.title}
-            className={`relative grid grid-cols-1 md:grid-cols-12 gap-6 items-start cursor-pointer ${index % 2 !== 0 ? 'md:text-left' : 'md:text-right'}`}
-            role="button"
-            tabIndex={0}
-            onClick={() => openProjectDetail(project)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                openProjectDetail(project);
-              }
-            }}
-          >
-            <div className={`col-span-12 md:col-span-6 sticky top-24 ${index % 2 !== 0 ? 'md:col-start-7 order-last md:order-first' : ''}`}>
-              <div className="relative h-80 rounded-2xl overflow-hidden border border-lightest-navy/50 bg-light-navy/60 shadow-xl group">
-                <div className="absolute inset-0 bg-gradient-to-tr from-navy/60 to-transparent z-10 transition-opacity duration-300 group-hover:opacity-0" />
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover p-0 transition-transform duration-500 group-hover:scale-105"
-                />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {projects.map((project, index) => (
+            <div
+              key={index}
+              onClick={() => setSelectedProject(project)}
+              className="group cursor-pointer bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-blue-300 transition-all duration-300 hover:-translate-y-1"
+            >
+              {project.image && (
+                <div className="relative h-48 overflow-hidden bg-gray-100">
+                  <img 
+                    src={project.image} 
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 to-transparent" />
+                </div>
+              )}
+              <div className="p-6 space-y-4">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                    {project.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm line-clamp-2">{project.description}</p>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  {project.tech.slice(0, 4).map((tech, i) => (
+                    <span key={i} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full font-medium">
+                      {tech}
+                    </span>
+                  ))}
+                  {project.tech.length > 4 && (
+                    <span className="px-3 py-1 bg-gray-100 text-gray-500 text-xs rounded-full font-medium">
+                      +{project.tech.length - 4}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {project.period}
+                  </div>
+                  <span className="text-sm font-semibold text-blue-600 group-hover:text-blue-700">
+                    자세히 보기 →
+                  </span>
+                </div>
               </div>
             </div>
+          ))}
+        </div>
+      </section>
 
-            <div className={`col-span-12 md:col-span-6 z-10 ${index % 2 === 0 ? 'md:col-start-7' : ''}`}>
-              <p className="font-mono text-green text-sm mb-2">Featured Project</p>
-              <h3 className="text-2xl font-bold text-lightest-slate mb-4">{project.title}</h3>
+      {/* Project Detail Modal */}
+      {selectedProject && (
+        <div 
+          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedProject(null)}
+        >
+          <div 
+            className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 px-8 py-6 flex items-center justify-between">
+              <h3 className="text-2xl font-bold text-gray-900">{selectedProject.title}</h3>
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
+                aria-label="닫기"
+              >
+                <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
 
-              <div className="bg-light-navy/90 text-slate p-6 rounded-xl text-sm leading-relaxed border border-lightest-navy/50 mb-5 shadow-lg backdrop-blur-sm">
-                {project.description}
-              </div>
-
-              <div className={`flex flex-col gap-3 mb-6 text-sm text-slate ${index % 2 === 0 ? 'items-end' : 'items-start'}`}>
-                <div className="flex items-center gap-2">
-                  <Calendar size={16} className="text-green" />
-                  <span>{project.period}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users size={16} className="text-green" />
-                  <span>{project.team}</span>
-                  <span className="text-light-slate">|</span>
-                  <span className="font-semibold text-lightest-slate">{project.role}</span>
-                </div>
-              </div>
-
-              {project.architecture && (
-                <div className={`mb-6 p-4 rounded-lg bg-navy/40 border border-green/20 ${index % 2 === 0 ? 'text-right' : 'text-left'}`}>
-                  <div className={`flex items-center gap-2 mb-2 text-green font-mono text-xs ${index % 2 === 0 ? 'justify-end' : 'justify-start'}`}>
-                    <Server size={14} />
-                    <span>System Architecture</span>
-                  </div>
-                  <p className="text-xs text-light-slate leading-relaxed">
-                    {project.architecture}
-                  </p>
+            {/* Content */}
+            <div className="px-8 py-6 space-y-8">
+              {/* Image */}
+              {selectedProject.image && (
+                <div className="rounded-2xl overflow-hidden border border-gray-200">
+                  <img 
+                    src={selectedProject.image} 
+                    alt={selectedProject.title}
+                    className="w-full h-80 object-cover"
+                  />
                 </div>
               )}
 
-              <ul className={`flex flex-wrap gap-3 text-slate font-mono text-xs mb-6 ${index % 2 === 0 ? 'justify-end' : 'justify-start'}`}>
-                {project.tech.map((tech) => (
-                  <li key={tech} className="px-3 py-1 rounded-full bg-navy/70 border border-lightest-navy/40 hover:text-green transition-colors cursor-default">
-                    {tech}
-                  </li>
-                ))}
-              </ul>
-              <div className={`flex items-center gap-4 ${index % 2 === 0 ? 'justify-end' : 'justify-start'}`}>
-                <a
-                  href={project.github}
-                  className="text-slate hover:text-green transition-colors"
-                  aria-label={`${project.title} GitHub`}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={(event) => event.stopPropagation()}
-                >
-                  <Github size={20} />
-                </a>
-                {project.external !== '#' && (
-                  <a
-                    href={project.external}
-                    className="text-slate hover:text-green transition-colors"
-                    aria-label={`${project.title} live link`}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={(event) => event.stopPropagation()}
-                  >
-                    <ExternalLink size={20} />
-                  </a>
-                )}
+              {/* Description */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">프로젝트 소개</h4>
+                <p className="text-gray-700 leading-relaxed text-lg">{selectedProject.longDescription}</p>
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
 
-      <div className="text-center mb-10">
-        <h3 className="text-2xl font-bold text-lightest-slate mb-2">기타 프로젝트</h3>
-        <p className="font-mono text-green text-sm">다양한 기술 스택을 활용한 실험적인 프로젝트들입니다.</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {otherProjects.map((project, index) => (
-          <div
-            key={project.title}
-            className="bg-light-navy/70 border border-lightest-navy/50 p-7 rounded-2xl shadow-lg hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full group cursor-pointer"
-            style={{ animationDelay: `${index * 60}ms` }}
-            role="button"
-            tabIndex={0}
-            onClick={() => openProjectDetail(project)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                openProjectDetail(project);
-              }
-            }}
-          >
-            <div className="flex justify-between items-center mb-6">
-              <Folder size={36} className="text-green group-hover:text-green/80 transition-colors" />
-              <div className="flex space-x-4">
-                <a
-                  href={project.github}
-                  className="text-slate hover:text-green transition-colors"
-                  aria-label={`${project.title} GitHub`}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={(event) => event.stopPropagation()}
-                >
-                  <Github size={18} />
-                </a>
-                {project.external !== '#' && (
-                  <a
-                    href={project.external}
-                    className="text-slate hover:text-green transition-colors"
-                    aria-label={`${project.title} live link`}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={(event) => event.stopPropagation()}
-                  >
-                    <ExternalLink size={18} />
-                  </a>
-                )}
-              </div>
-            </div>
-
-            <h3 className="text-xl font-bold text-lightest-slate mb-2 group-hover:text-green transition-colors">{project.title}</h3>
-
-            <div className="flex flex-col gap-2 mb-4 text-xs text-light-slate font-mono">
-              <div className="flex items-center gap-2">
-                <Calendar size={12} />
-                <span>{project.period}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Users size={12} />
-                <span>{project.team} · {project.role}</span>
-              </div>
-            </div>
-
-            <p className="text-slate text-sm flex-grow mb-6 leading-relaxed">{project.description}</p>
-
-            {project.architecture && (
-              <div className="mb-4 pt-4 border-t border-lightest-navy/30">
-                <div className="flex items-center gap-2 mb-1 text-green text-xs font-mono">
-                  <Server size={12} />
-                  <span>Architecture</span>
+              {/* Project Info */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="text-xs text-gray-500 mb-2 font-medium">기간</div>
+                  <div className="text-gray-900 font-semibold">{selectedProject.period}</div>
                 </div>
-                <p className="text-xs text-light-slate line-clamp-3 hover:line-clamp-none transition-all">
-                  {project.architecture}
-                </p>
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="text-xs text-gray-500 mb-2 font-medium">팀 구성</div>
+                  <div className="text-gray-900 font-semibold">{selectedProject.team}</div>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="text-xs text-gray-500 mb-2 font-medium">역할</div>
+                  <div className="text-gray-900 font-semibold">{selectedProject.role}</div>
+                </div>
               </div>
-            )}
 
-            <ul className="flex flex-wrap gap-2 text-slate font-mono text-xs mt-auto">
-              {project.tech.map((tech) => (
-                <li key={tech} className="px-3 py-1 rounded-full bg-navy/70 border border-lightest-navy/40">
-                  {tech}
-                </li>
-              ))}
-            </ul>
+              {/* Highlights */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">주요 구현 사항</h4>
+                <ul className="space-y-3">
+                  {selectedProject.highlights.map((highlight, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Tech Stack */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">기술 스택</h4>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProject.tech.map((tech, i) => (
+                    <span key={i} className="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg font-medium">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Links */}
+              <div className="flex flex-wrap gap-3 pt-4">
+                <a
+                  href={selectedProject.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                  </svg>
+                  GitHub 저장소 보기
+                </a>
+                {selectedProject.demo && (
+                  <a
+                    href={selectedProject.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-900 text-gray-900 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    라이브 데모 보기
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
-
-      <div className="mt-20">
-        <div className="flex items-center mb-8">
-          <span className="text-green font-mono text-sm mr-2">GitHub</span>
-          <h3 className="text-2xl font-bold text-lightest-slate">저장소 요약</h3>
-          <div className="h-[1px] w-full bg-lightest-navy ml-6" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {githubRepos.map((repo) => (
-            <a
-              key={repo.name}
-              href={repo.href}
-              className="group flex flex-col gap-3 rounded-2xl border border-lightest-navy/50 bg-light-navy/60 p-6 hover:-translate-y-1 transition-transform"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="flex items-center justify-between">
-                <h4 className="text-lg font-semibold text-lightest-slate group-hover:text-green transition-colors">
-                  {repo.name}
-                </h4>
-                <Github size={18} className="text-slate group-hover:text-green transition-colors" />
-              </div>
-              <p className="text-sm text-slate leading-relaxed">{repo.description}</p>
-              <span className="text-xs font-mono text-green">GitHub 바로가기</span>
-            </a>
-          ))}
-        </div>
-      </div>
-
-    </section>
+      )}
+    </>
   );
 };
 
