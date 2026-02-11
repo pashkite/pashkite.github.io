@@ -7,17 +7,24 @@ import Contact from './components/Contact';
 
 function App() {
   return (
-    <div className="bg-navy min-h-screen text-slate selection:bg-green selection:text-navy">
-      {/* Enhanced gradient background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy via-[#0a1628] to-[#05111f] opacity-90" />
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-green/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px] animate-pulse" style={{animationDelay: '1s'}} />
+    <div className="relative min-h-screen overflow-x-hidden">
+      {/* Animated gradient background */}
+      <div className="fixed inset-0 bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e]">
+        <div className="absolute inset-0">
+          {/* Animated orbs */}
+          <div className="absolute top-0 -left-4 w-[500px] h-[500px] bg-purple-500/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
+          <div className="absolute top-0 -right-4 w-[500px] h-[500px] bg-cyan-500/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
+          <div className="absolute -bottom-8 left-20 w-[500px] h-[500px] bg-pink-500/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000" />
+        </div>
       </div>
 
+      {/* Grain texture overlay */}
+      <div className="fixed inset-0 opacity-[0.015] pointer-events-none" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="4" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E")'}} />
+
       <Header />
-      <main className="relative z-10 flex flex-col items-center w-full px-4 md:px-12 xl:px-24">
-        <div className="w-full max-w-[1200px] space-y-32 md:space-y-40">
+      
+      <main className="relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Hero />
           <About />
           <Skills />
@@ -25,11 +32,15 @@ function App() {
           <Contact />
         </div>
       </main>
-      
+
       {/* Footer */}
-      <footer className="relative z-10 mt-20 py-8 text-center text-sm text-light-slate border-t border-lightest-navy/20">
-        <p>Built with React + TypeScript + Tailwind CSS</p>
-        <p className="mt-2 text-slate">© 2026 Park Jaeyeon</p>
+      <footer className="relative z-10 mt-32 pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="glass rounded-2xl p-8 text-center">
+            <p className="text-gray-300 text-sm mb-2">Designed & Built by Park Jaeyeon</p>
+            <p className="text-gray-400 text-xs">React · TypeScript · Tailwind CSS · 2026</p>
+          </div>
+        </div>
       </footer>
     </div>
   );
