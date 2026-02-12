@@ -1,16 +1,464 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <title>Park Jaeyeon | Portfolio</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Park Jaeyeon | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ===== Light Mode (Default) ===== */
+    :root, [data-theme="light"] {
+      --bg: #f8f9fc;
+      --bg-card: rgba(0,0,0,0.03);
+      --bg-card-hover: rgba(0,0,0,0.06);
+      --text: #1a1a2e;
+      --text-dim: #64648c;
+      --accent: #7c3aed;
+      --accent2: #0891b2;
+      --gradient: linear-gradient(135deg, #7c3aed, #0891b2);
+      --border: rgba(0,0,0,0.08);
+      --nav-bg: rgba(248,249,252,.8);
+      --blob-opacity: .08;
+      --shadow-hover: rgba(0,0,0,.08);
+      --tag-bg: rgba(124,58,237,.08);
+      --badge-border: rgba(124,58,237,.25);
+      --btn-primary-text: #fff;
+      --font: 'Inter', -apple-system, sans-serif;
+      --mono: 'Fira Code', monospace;
+      --max-w: 1100px;
+    }
+
+    /* ===== Dark Mode ===== */
+    [data-theme="dark"] {
+      --bg: #0a0a0f;
+      --bg-card: rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.08);
+      --text: #e4e4e7;
+      --text-dim: #71717a;
+      --accent: #a78bfa;
+      --accent2: #22d3ee;
+      --gradient: linear-gradient(135deg, #a78bfa, #22d3ee);
+      --border: rgba(255,255,255,0.08);
+      --nav-bg: rgba(10,10,15,.7);
+      --blob-opacity: .12;
+      --shadow-hover: rgba(0,0,0,.3);
+      --tag-bg: rgba(167,139,250,.1);
+      --badge-border: rgba(167,139,250,.3);
+      --btn-primary-text: #0a0a0f;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+      transition: background .4s ease, color .4s ease;
+    }
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: rgba(124,58,237,.2); }
+
+    /* ===== Glow Blob ===== */
+    .blob {
+      position: fixed; border-radius: 50%; filter: blur(120px);
+      opacity: var(--blob-opacity); pointer-events: none; z-index: 0;
+      transition: opacity .4s ease;
+    }
+    .blob-1 { width: 600px; height: 600px; background: #7c3aed; top: -10%; left: -10%; }
+    .blob-2 { width: 500px; height: 500px; background: #0891b2; bottom: -10%; right: -10%; }
+    [data-theme="dark"] .blob-1 { background: #a78bfa; }
+    [data-theme="dark"] .blob-2 { background: #22d3ee; }
+
+    /* ===== Nav ===== */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      background: var(--nav-bg); border-bottom: 1px solid var(--border);
+      transition: background .4s ease;
+    }
+    .nav-inner {
+      max-width: var(--max-w); margin: auto; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between; height: 64px;
+    }
+    .logo { font-weight: 700; font-size: 1.1rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: .875rem; color: var(--text-dim); transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links .num { color: var(--accent); font-family: var(--mono); font-size: .75rem; margin-right: .3rem; }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .nav-cta {
+      font-size: .8rem; padding: .5rem 1.2rem; border: 1px solid var(--accent); border-radius: 6px;
+      color: var(--accent); transition: all .25s;
+    }
+    .nav-cta:hover { background: var(--tag-bg); }
+
+    /* ===== Theme Toggle ===== */
+    .theme-toggle {
+      width: 44px; height: 24px; border-radius: 999px; border: 1px solid var(--border);
+      background: var(--bg-card); cursor: pointer; position: relative;
+      transition: background .3s, border-color .3s;
+    }
+    .theme-toggle .thumb {
+      position: absolute; top: 2px; left: 2px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--gradient); transition: transform .3s ease;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; line-height: 1;
+    }
+    [data-theme="dark"] .theme-toggle .thumb { transform: translateX(20px); }
+    .theme-toggle .icon-sun,
+    .theme-toggle .icon-moon { position: absolute; transition: opacity .3s; }
+    .theme-toggle .icon-sun { opacity: 1; }
+    .theme-toggle .icon-moon { opacity: 0; }
+    [data-theme="dark"] .theme-toggle .icon-sun { opacity: 0; }
+    [data-theme="dark"] .theme-toggle .icon-moon { opacity: 1; }
+
+    /* ===== Section common ===== */
+    section { position: relative; z-index: 1; max-width: var(--max-w); margin: auto; padding: 6rem 2rem; }
+    .section-label {
+      font-family: var(--mono); font-size: .8rem; color: var(--accent); margin-bottom: .5rem;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); max-width: 300px; }
+    .section-title { font-size: 2rem; font-weight: 700; margin-bottom: 1.5rem; }
+
+    /* ===== Hero ===== */
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 64px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .8rem; color: var(--accent); border: 1px solid var(--badge-border);
+      border-radius: 999px; padding: .35rem 1rem; margin-bottom: 1.5rem; width: fit-content;
+    }
+    .hero-badge .dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+    .hero h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; line-height: 1.15; margin-bottom: 1rem; }
+    .hero h1 .gradient { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { max-width: 540px; color: var(--text-dim); font-size: 1.05rem; margin-bottom: 2.5rem; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      padding: .75rem 2rem; border-radius: 8px; font-weight: 600; font-size: .9rem;
+      background: var(--gradient); color: var(--btn-primary-text); border: none; cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(124,58,237,.25); }
+    .btn-secondary {
+      padding: .75rem 2rem; border-radius: 8px; font-weight: 600; font-size: .9rem;
+      background: transparent; color: var(--text); border: 1px solid var(--border); cursor: pointer; transition: all .2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ===== Skill pills (hero) ===== */
+    .hero-skills { display: flex; gap: .75rem; margin-top: 3rem; flex-wrap: wrap; }
+    .pill {
+      font-size: .8rem; padding: .4rem 1rem; border-radius: 999px;
+      background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim);
+    }
+
+    /* ===== About ===== */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .about-text { color: var(--text-dim); font-size: .95rem; }
+    .about-text p + p { margin-top: 1rem; }
+    .about-avatar {
+      width: 100%; aspect-ratio: 1; border-radius: 16px;
+      background: var(--gradient); display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; font-weight: 800; color: #fff; opacity: .9;
+    }
+
+    /* ===== Skills ===== */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+    .skill-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.5rem; transition: all .3s;
+    }
+    .skill-card:hover { background: var(--bg-card-hover); border-color: rgba(124,58,237,.2); transform: translateY(-4px); }
+    .skill-card h3 { font-size: 1rem; margin-bottom: .75rem; display: flex; align-items: center; gap: .5rem; }
+    .skill-card h3 .icon { font-size: 1.2rem; }
+    .skill-card ul { list-style: none; }
+    .skill-card li { font-size: .85rem; color: var(--text-dim); padding: .25rem 0; }
+    .skill-card li::before { content: '\25b9'; color: var(--accent); margin-right: .5rem; }
+
+    /* ===== Projects ===== */
+    .projects-list { display: flex; flex-direction: column; gap: 2rem; }
+    .project-card {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2rem; transition: all .3s;
+    }
+    .project-card:hover { border-color: rgba(124,58,237,.2); transform: translateY(-4px); box-shadow: 0 20px 50px var(--shadow-hover); }
+    .project-info { display: flex; flex-direction: column; justify-content: center; }
+    .project-overline { font-family: var(--mono); font-size: .75rem; color: var(--accent); margin-bottom: .4rem; }
+    .project-info h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: .6rem; }
+    .project-info p { font-size: .9rem; color: var(--text-dim); margin-bottom: 1rem; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+    .tag {
+      font-family: var(--mono); font-size: .7rem; padding: .25rem .7rem; border-radius: 999px;
+      background: var(--tag-bg); color: var(--accent);
+    }
+    .project-period { font-size: .8rem; color: var(--text-dim); }
+    .project-visual {
+      border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, rgba(124,58,237,.06), rgba(8,145,178,.06));
+      min-height: 200px; font-size: 3rem;
+    }
+    [data-theme="dark"] .project-visual {
+      background: linear-gradient(135deg, rgba(167,139,250,.08), rgba(34,211,238,.08));
+    }
+
+    /* ===== Contact ===== */
+    .contact-wrap { text-align: center; max-width: 600px; margin: auto; }
+    .contact-wrap p { color: var(--text-dim); margin-bottom: 2rem; }
+    .contact-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ===== Footer ===== */
+    footer {
+      position: relative; z-index: 1; text-align: center; padding: 2rem;
+      font-size: .8rem; color: var(--text-dim); border-top: 1px solid var(--border);
+    }
+
+    /* ===== Animate on scroll ===== */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== Mobile ===== */
+    .menu-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .menu-toggle { display: block; }
+      .about-grid { grid-template-columns: 1fr; }
+      .project-card { grid-template-columns: 1fr; }
+      section { padding: 4rem 1.25rem; }
+    }
+  </style>
+  <!-- Prevent flash of wrong theme -->
+  <script>
+    (function() {
+      var t = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+
+<!-- Background blobs -->
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">JY.</a>
+    <ul class="nav-links">
+      <li><a href="#about"><span class="num">01.</span>소개</a></li>
+      <li><a href="#skills"><span class="num">02.</span>기술</a></li>
+      <li><a href="#projects"><span class="num">03.</span>프로젝트</a></li>
+      <li><a href="#contact"><span class="num">04.</span>연락</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">
+        <span class="thumb">
+          <span class="icon-sun">☀️</span>
+          <span class="icon-moon">🌙</span>
+        </span>
+      </button>
+      <a href="#contact" class="nav-cta">연락하기</a>
+    </div>
+    <button class="menu-toggle" aria-label="메뉴" onclick="document.querySelector('.nav-links').classList.toggle('show')">☰</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div class="hero-badge"><span class="dot"></span> Available for opportunities</div>
+  <h1>안녕하세요,<br><span class="gradient">박재연</span>입니다</h1>
+  <p>사용자 중심의 인터페이스를 만드는 프론트엔드 개발자입니다. React와 TypeScript를 활용하여 직관적이고 아름다운 웹 경험을 만듭니다. 사용자 경험을 최우선으로 생각하며, 디테일한 UI 구현과 성능 최적화에 관심이 많습니다.</p>
+  <div class="hero-btns">
+    <a href="#projects" class="btn-primary">프로젝트 보기</a>
+    <a href="#contact" class="btn-secondary">연락하기</a>
+  </div>
+  <div class="hero-skills">
+    <span class="pill">⚛️ React</span>
+    <span class="pill">📘 TypeScript</span>
+    <span class="pill">📱 Responsive</span>
+    <span class="pill">⚡ Performance</span>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about" class="reveal">
+  <div class="section-label">01. About</div>
+  <h2 class="section-title">소개</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>사용자에게 닿는 경험을 설계하는 것을 좋아합니다. 문제 정의부터 화면 설계, 구현, 배포까지 전 과정을 함께 하며 팀의 목표를 제품으로 풀어내는 일을 하고 있습니다.</p>
+      <p>특히 접근성과 유지보수를 고려한 아키텍처를 고민하고, 디자이너와 기획자와의 긴밀한 협업을 통해 "사용하기 쉬운" 인터페이스를 만드는 데 집중합니다.</p>
+    </div>
+    <div class="about-avatar">JA</div>
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills" class="reveal">
+  <div class="section-label">02. Skills</div>
+  <h2 class="section-title">보유 기술</h2>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <h3><span class="icon">💻</span> Language</h3>
+      <ul>
+        <li>Java</li>
+        <li>Python</li>
+        <li>JavaScript</li>
+        <li>TypeScript</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3><span class="icon">🎨</span> Frontend</h3>
+      <ul>
+        <li>React</li>
+        <li>Vue.js</li>
+        <li>Redux</li>
+        <li>Tailwind CSS</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3><span class="icon">⚙️</span> Backend</h3>
+      <ul>
+        <li>Spring Boot</li>
+        <li>Django</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3><span class="icon">🗄️</span> Database</h3>
+      <ul>
+        <li>MySQL</li>
+        <li>MongoDB</li>
+        <li>Redis</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3><span class="icon">🛠️</span> Tools & DevOps</h3>
+      <ul>
+        <li>Git</li>
+        <li>Docker</li>
+        <li>Jira</li>
+        <li>Figma</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Projects -->
+<section id="projects" class="reveal">
+  <div class="section-label">03. Projects</div>
+  <h2 class="section-title">프로젝트</h2>
+  <div class="projects-list">
+
+    <div class="project-card">
+      <div class="project-info">
+        <div class="project-overline">Featured Project</div>
+        <h3>Aiders</h3>
+        <p>실시간 응급 출동 및 병원 매칭 시스템</p>
+        <div class="project-tags">
+          <span class="tag">React</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">WebSocket</span>
+          <span class="tag">Spring Boot</span>
+        </div>
+        <div class="project-period">2024.10 — 2024.11</div>
+      </div>
+      <div class="project-visual">🚑</div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-info">
+        <div class="project-overline">Featured Project</div>
+        <h3>Finble</h3>
+        <p>개인 자산 관리 및 금융 데이터 시각화 플랫폼</p>
+        <div class="project-tags">
+          <span class="tag">React</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Chart.js</span>
+          <span class="tag">Recharts</span>
+        </div>
+        <div class="project-period">2024.08 — 2024.09</div>
+      </div>
+      <div class="project-visual">📊</div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-info">
+        <div class="project-overline">Featured Project</div>
+        <h3>Board Game Collection</h3>
+        <p>보드게임 온라인 플랫폼</p>
+        <div class="project-tags">
+          <span class="tag">React</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">WebSocket</span>
+          <span class="tag">Zustand</span>
+        </div>
+        <div class="project-period">2024.06 — 2024.07</div>
+      </div>
+      <div class="project-visual">🎲</div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-info">
+        <div class="project-overline">Personal</div>
+        <h3>Portfolio Website</h3>
+        <p>개인 포트폴리오 웹사이트</p>
+        <div class="project-tags">
+          <span class="tag">React</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Tailwind CSS</span>
+          <span class="tag">Vite</span>
+        </div>
+        <div class="project-period">2024.02 — 현재</div>
+      </div>
+      <div class="project-visual">🌐</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" class="reveal">
+  <div class="section-label">04. Contact</div>
+  <h2 class="section-title" style="text-align:center;">연락하기</h2>
+  <div class="contact-wrap">
+    <p>새로운 제안과 협업을 언제나 환영합니다.<br>프로젝트가 있다면 간단히 공유해주세요. 곧 답장을 드리겠습니다!</p>
+    <div class="contact-btns">
+      <a href="mailto:jaeyoun310@naver.com" class="btn-primary">메일 보내기</a>
+      <a href="#" class="btn-secondary">포트폴리오 다운로드</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  Designed & Built by Park Jaeyeon
+</footer>
+
+<script>
+  // ===== Theme Toggle =====
+  const toggle = document.getElementById('themeToggle');
+  function setTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('theme', t);
+  }
+  toggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  });
+
+  // ===== Scroll Reveal =====
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
 </html>
