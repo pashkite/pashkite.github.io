@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="color-scheme" content="dark" />
+<title>Prompt Studio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="top"><div class="brand"><div class="logo">P</div><div><h1>Prompt Studio</h1><p>장면 · 태그 · 구도 · 카메라 → 모델별 프롬프트</p></div></div><span class="status">LIVE MVP</span></div></header>
+<main class="layout">
+<div class="stack">
+<section class="card"><div class="titleRow"><div><h2>1. 장면</h2><div class="hint">한국어 자유 텍스트. 비워도 됩니다.</div></div></div><textarea id="scene" class="scene">비 오는 서울 골목, 우산 쓴 여성</textarea></section>
+<section class="card"><h2>2. 생성 설정</h2><div class="settings" style="margin-top:12px"><label><span class="label">목적</span><select id="purpose"><option value="portrait">인물</option><option value="landscape">거리·풍경</option><option value="product">제품</option><option value="poster">포스터</option><option value="character">캐릭터</option></select></label><label><span class="label">모델</span><select id="model"><option value="midjourney">Midjourney</option><option value="flux">Flux</option><option value="gpt-image">GPT Image</option><option value="nano-banana">Nano Banana</option><option value="generic">범용</option></select></label><label><span class="label">비율</span><select id="ratio"><option>1:1</option><option selected>4:5</option><option>3:4</option><option>2:3</option><option>3:2</option><option>16:9</option><option>9:16</option><option>21:9</option></select></label></div></section>
+<section class="card"><div class="titleRow"><div><h2>3. 구도 · 카메라</h2><div class="hint">프리셋 / 2D / 3D가 같은 카메라 상태를 공유합니다.</div></div><div class="tabs" id="compositionTabs"><button class="tab on" data-view="preset">프리셋</button><button class="tab" data-view="frame2d">2D 프레임</button><button class="tab" data-view="orbit3d">3D 궤도</button></div></div><div class="compositionGrid"><div class="visual">
+<div class="view active" id="view-preset"><div style="padding:16px"><div class="presets" id="presetButtons"></div><div style="margin-top:20px" class="frame"><div class="subjectMarker" id="presetSubject" style="left:50%;top:50%"></div></div></div></div>
+<div class="view" id="view-frame2d"><div class="frame" id="frame2d"><div class="subjectMarker" id="frameSubject" style="left:50%;top:50%"></div></div><div class="orbitHelp">프레임 클릭: 피사체 배치</div></div>
+<div class="view" id="view-orbit3d"><canvas class="orbitCanvas" id="orbitCanvas"></canvas><div class="orbitHelp">드래그: 시점 · 휠: 거리</div></div>
+</div><div class="controls">
+<label class="control"><span>좌우 시점</span><input id="az" type="range" min="-180" max="180" value="0"><output id="azv">0°</output></label>
+<label class="control"><span>상하 시점</span><input id="el" type="range" min="-70" max="70" value="0"><output id="elv">0°</output></label>
+<label class="control"><span>거리</span><input id="dist" type="range" min="0.6" max="7" step="0.1" value="4.2"><output id="distv">4.2</output></label>
+<label class="control"><span>렌즈</span><input id="lens" type="range" min="16" max="200" value="50"><output id="lensv">50mm</output></label>
+<label class="control"><span>롤</span><input id="roll" type="range" min="-35" max="35" value="0"><output id="rollv">0°</output></label>
+<div class="coord"><div class="mini">시점: <b id="viewpointText">front view</b></div><div class="mini">샷: <b id="shotText">full body shot</b></div></div>
+<div class="poseRow"><select id="posePreset"><option value="standing pose">서기</option><option value="walking pose">걷기</option><option value="running pose">달리기</option><option value="leaning forward slightly">숙이기</option><option value="crouching pose">수그리기</option><option value="waving one hand">손 흔들기</option><option value="one hand on the hip">허리에 손</option><option value="arms crossed">팔짱</option><option value="sitting pose">앉기</option><option value="looking to the left">왼쪽 보기</option><option value="looking to the right">오른쪽 보기</option></select><input id="poseCustom" class="input" placeholder="자세 직접 입력 (예: left hand raised above the head)"></div>
+</div></div></section>
+<section class="card"><div class="tagsHeader"><div><h2>4. 태그 라이브러리 <span class="count" id="tagCount"></span></h2><div class="hint">717개 큐레이션 · 한/영/일 검색 · 직접 입력</div></div><div class="langs"><button class="tab on" data-lang="ko">한글</button><button class="tab" data-lang="en">EN</button><button class="tab" data-lang="ja">日本語</button></div></div>
+<div class="searchRow"><input id="tagSearch" class="input" placeholder="태그 검색"><button id="randomBtn" class="ghost">추천 조합</button><button id="clearBtn" class="ghost">초기화</button></div><div class="cats" id="cats" style="margin:10px 0"></div><div class="tagbox" id="tagbox"></div><div class="selectedArea" id="selectedArea"></div><div class="customRow"><select id="customCategory"></select><input id="customTag" class="input" placeholder="직접 설정 추가"><button class="orange" id="customAdd">추가</button></div></section>
+</div>
+<aside class="resultPanel"><section class="card"><div class="resultHead"><div><div class="live">LIVE COMPILER</div><h2 style="margin-top:5px">결과 프롬프트</h2></div><button id="copyBtn" class="orange">복사</button></div><div class="badges"><span class="badge" id="modelBadge"></span><span class="badge" id="ratioBadge"></span><span class="badge" id="selBadge"></span></div><div class="tabs resultTabs"><button class="tab on" data-result="basic">기본안</button><button class="tab" data-result="detail">상세안</button><button class="tab" data-result="style">스타일안</button></div><textarea id="output" class="promptOut"></textarea><div class="resultActions"><span class="wordCount" id="wordCount"></span><button id="copyBtn2" class="ghost">클립보드 복사</button></div></section><section class="card"><div class="footerNote">이미지 생성 API는 연결하지 않은 MVP입니다. 현재 입력값을 모델별 프롬프트 문법으로 컴파일합니다. 네거티브는 선택한 항목만 포함합니다.</div></section></aside>
+</main>
+<script src="app.js" defer></script>
+</body></html>
