@@ -1,6 +1,5 @@
 import * as THREE from 'https://esm.sh/three@0.180.0';
 import { GLTFLoader } from 'https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'https://esm.sh/three@0.180.0/examples/jsm/loaders/DRACOLoader.js';
 
 const canvas = document.getElementById('threeCanvas');
 const statusEl = document.getElementById('orbitStatus');
@@ -15,10 +14,10 @@ const MODEL_DEFS = {
     targetHeight: 2.08,
   },
   anime: {
-    label: '애니형 · Kira',
-    url: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/models/gltf/kira.glb',
-    rotationY: Math.PI,
-    targetHeight: 2.06,
+    label: '애니형 · Michelle',
+    url: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/models/gltf/Michelle.glb',
+    rotationY: 0,
+    targetHeight: 2.04,
   },
   xbot: {
     label: 'Xbot · Mixamo',
@@ -44,6 +43,7 @@ const camera = new THREE.PerspectiveCamera(45, 1, 0.05, 60);
 const target = new THREE.Vector3(0, 1.02, 0);
 
 scene.add(new THREE.HemisphereLight(0xe7efff, 0x20242e, 2.2));
+
 const key = new THREE.DirectionalLight(0xffffff, 3.5);
 key.position.set(-3.5, 6, -4.5);
 key.castShadow = true;
@@ -55,16 +55,18 @@ key.shadow.camera.right = 4;
 key.shadow.camera.top = 5;
 key.shadow.camera.bottom = -2;
 scene.add(key);
+
 const rim = new THREE.DirectionalLight(0x8da9ff, 2.1);
 rim.position.set(4, 3, 5);
 scene.add(rim);
+
 const fill = new THREE.DirectionalLight(0xffb27a, 0.75);
 fill.position.set(2, 2.5, -5);
 scene.add(fill);
 
 const floor = new THREE.Mesh(
   new THREE.CircleGeometry(5.8, 96),
-  new THREE.MeshStandardMaterial({ color: 0x11151d, roughness: 0.88, metalness: 0.02 })
+  new THREE.MeshStandardMaterial({ color: 0x11151d, roughness: 0.88, metalness: 0.02 }),
 );
 floor.rotation.x = -Math.PI / 2;
 floor.position.y = -0.012;
@@ -73,8 +75,12 @@ scene.add(floor);
 
 const grid = new THREE.GridHelper(8, 16, 0x394153, 0x242a35);
 grid.position.y = 0.002;
-if (Array.isArray(grid.material)) grid.material.forEach(m => { m.transparent = true; m.opacity = 0.24; });
-else { grid.material.transparent = true; grid.material.opacity = 0.24; }
+if (Array.isArray(grid.material)) {
+  grid.material.forEach((m) => { m.transparent = true; m.opacity = 0.24; });
+} else {
+  grid.material.transparent = true;
+  grid.material.opacity = 0.24;
+}
 scene.add(grid);
 
 const frontArrow = new THREE.ArrowHelper(
@@ -83,19 +89,12 @@ const frontArrow = new THREE.ArrowHelper(
   0.72,
   0xff7a1a,
   0.18,
-  0.10
+  0.10,
 );
 scene.add(frontArrow);
 
-const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/libs/draco/');
-dracoLoader.preload();
-
 const loader = new GLTFLoader();
-loader.setDRACOLoader(dracoLoader);
-
 const cache = new Map();
-let currentKey = null;
 let currentModel = null;
 let currentLoadId = 0;
 let visible = false;
@@ -116,29 +115,19 @@ function cameraState() {
   };
 }
 
-function requestRender() {
-  if (!visible || renderQueued) return;
-  renderQueued = true;
-  requestAnimationFrame(() => {
-    renderQueued = false;
-    resizeRenderer();
-    updateCamera();
-    renderer.render(scene, camera);
-  });
-}
-
 function resizeRenderer() {
   const rect = canvas.getBoundingClientRect();
-  if (!rect.width || !rect.height) return;
+  if (!rect.width || !rect.height) return false;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const width = Math.max(1, Math.round(rect.width * dpr));
   const height = Math.max(1, Math.round(rect.height * dpr));
   if (canvas.width !== width || canvas.height !== height) {
-    renderer.setSize(rect.width, rect.height, false);
     renderer.setPixelRatio(dpr);
+    renderer.setSize(rect.width, rect.height, false);
   }
   camera.aspect = rect.width / rect.height;
   camera.updateProjectionMatrix();
+  return true;
 }
 
 function updateCamera() {
@@ -151,7 +140,7 @@ function updateCamera() {
   camera.position.set(
     Math.sin(theta) * horizontal,
     target.y + Math.sin(phi) * radius,
-    -Math.cos(theta) * horizontal
+    -Math.cos(theta) * horizontal,
   );
   camera.setFocalLength(THREE.MathUtils.clamp(s.lens, 16, 200));
   camera.lookAt(target);
@@ -159,15 +148,25 @@ function updateCamera() {
   camera.updateProjectionMatrix();
 }
 
+function requestRender() {
+  if (!visible || renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(() => {
+    renderQueued = false;
+    if (!resizeRenderer()) return;
+    updateCamera();
+    renderer.render(scene, camera);
+  });
+}
+
 function freezeUsefulPose(gltf) {
   if (!gltf.animations?.length) return;
-  const preferred = gltf.animations.find(a => /idle|standing|stand/i.test(a.name)) || gltf.animations[0];
+  const preferred = gltf.animations.find((a) => /idle|standing|stand/i.test(a.name)) || gltf.animations[0];
   try {
     const mixer = new THREE.AnimationMixer(gltf.scene);
     const action = mixer.clipAction(preferred);
     action.play();
-    const t = Math.max(0, preferred.duration * 0.12);
-    mixer.setTime(t);
+    mixer.setTime(Math.max(0, preferred.duration * 0.12));
     action.paused = true;
     gltf.scene.userData.__promptStudioMixer = mixer;
   } catch (_) {}
@@ -178,10 +177,9 @@ function normalizeModel(model, def) {
   model.updateMatrixWorld(true);
 
   let box = new THREE.Box3().setFromObject(model);
-  let size = box.getSize(new THREE.Vector3());
-  if (!Number.isFinite(size.y) || size.y <= 0.001) size.y = 1;
-  const scale = def.targetHeight / size.y;
-  model.scale.multiplyScalar(scale);
+  const size = box.getSize(new THREE.Vector3());
+  const modelHeight = Number.isFinite(size.y) && size.y > 0.001 ? size.y : 1;
+  model.scale.multiplyScalar(def.targetHeight / modelHeight);
   model.updateMatrixWorld(true);
 
   box = new THREE.Box3().setFromObject(model);
@@ -191,12 +189,12 @@ function normalizeModel(model, def) {
   model.position.y -= box.min.y;
   model.updateMatrixWorld(true);
 
-  model.traverse(obj => {
+  model.traverse((obj) => {
     if (!obj.isMesh) return;
     obj.castShadow = true;
     obj.receiveShadow = true;
     const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
-    mats.filter(Boolean).forEach(mat => {
+    mats.filter(Boolean).forEach((mat) => {
       if ('envMapIntensity' in mat) mat.envMapIntensity = 0.65;
       if ('roughness' in mat) mat.roughness = Math.max(0.35, mat.roughness ?? 0.6);
       mat.needsUpdate = true;
@@ -216,26 +214,24 @@ async function loadModel(keyName) {
       const gltf = await loader.loadAsync(def.url);
       if (loadId !== currentLoadId) return;
       freezeUsefulPose(gltf);
-      const model = normalizeModel(gltf.scene, def);
-      entry = { model, gltf };
+      entry = { model: normalizeModel(gltf.scene, def), gltf };
       cache.set(keyName, entry);
     }
     if (loadId !== currentLoadId) return;
 
     if (currentModel) scene.remove(currentModel);
     currentModel = entry.model;
-    currentKey = keyName;
     scene.add(currentModel);
 
-    document.querySelectorAll('[data-avatar]').forEach(btn => {
+    document.querySelectorAll('[data-avatar]').forEach((btn) => {
       btn.classList.toggle('on', btn.dataset.avatar === keyName);
     });
     try { localStorage.setItem('promptStudioAvatar', keyName); } catch (_) {}
-    if (statusEl) statusEl.textContent = `${def.label} · 외부 GLB`;
+    if (statusEl) statusEl.textContent = `${def.label} · 단독 캐릭터 GLB`;
     requestRender();
   } catch (err) {
     console.error('3D model load failed:', err);
-    if (statusEl) statusEl.textContent = `${def.label} 로드 실패 · 다시 선택해 보세요`;
+    if (statusEl) statusEl.textContent = `${def.label} 로드 실패 · 다른 모델을 선택해 보세요`;
   }
 }
 
@@ -251,7 +247,7 @@ let pointerId = null;
 let lastX = 0;
 let lastY = 0;
 
-canvas.addEventListener('pointerdown', e => {
+canvas.addEventListener('pointerdown', (e) => {
   dragging = true;
   pointerId = e.pointerId;
   lastX = e.clientX;
@@ -260,7 +256,7 @@ canvas.addEventListener('pointerdown', e => {
   canvas.style.cursor = 'grabbing';
 });
 
-canvas.addEventListener('pointermove', e => {
+canvas.addEventListener('pointermove', (e) => {
   if (!dragging || (pointerId !== null && e.pointerId !== pointerId)) return;
   const dx = e.clientX - lastX;
   const dy = e.clientY - lastY;
@@ -281,12 +277,13 @@ function endDrag(e) {
   canvas.style.cursor = 'grab';
   try { canvas.releasePointerCapture?.(e.pointerId); } catch (_) {}
 }
+
 canvas.addEventListener('pointerup', endDrag);
 canvas.addEventListener('pointercancel', endDrag);
-canvas.addEventListener('pointerleave', e => { if (dragging) endDrag(e); });
+canvas.addEventListener('pointerleave', (e) => { if (dragging) endDrag(e); });
 canvas.style.cursor = 'grab';
 
-canvas.addEventListener('wheel', e => {
+canvas.addEventListener('wheel', (e) => {
   e.preventDefault();
   const s = cameraState();
   const next = THREE.MathUtils.clamp(s.dist + Math.sign(e.deltaY) * 0.24, 0.6, 7);
@@ -298,7 +295,7 @@ for (const id of ['az', 'el', 'dist', 'lens', 'roll']) {
   document.getElementById(id)?.addEventListener('input', requestRender);
 }
 
-document.querySelectorAll('[data-avatar]').forEach(btn => {
+document.querySelectorAll('[data-avatar]').forEach((btn) => {
   btn.addEventListener('click', () => loadModel(btn.dataset.avatar));
 });
 
@@ -312,11 +309,11 @@ tab3d?.addEventListener('click', () => {
   requestRender();
 });
 
-document.querySelectorAll('[data-view]:not([data-view="orbit3d"])').forEach(btn => {
+document.querySelectorAll('[data-view]:not([data-view="orbit3d"])').forEach((btn) => {
   btn.addEventListener('click', () => { visible = false; });
 });
 
-const ro = new ResizeObserver(() => requestRender());
+const ro = new ResizeObserver(requestRender);
 ro.observe(view3d);
 window.addEventListener('resize', requestRender);
 
