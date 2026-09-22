@@ -1,5 +1,6 @@
 import * as THREE from 'https://esm.sh/three@0.180.0';
 import { GLTFLoader } from 'https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'https://esm.sh/three@0.180.0/examples/jsm/loaders/DRACOLoader.js';
 
 const canvas = document.getElementById('threeCanvas');
 const statusEl = document.getElementById('orbitStatus');
@@ -76,7 +77,6 @@ if (Array.isArray(grid.material)) grid.material.forEach(m => { m.transparent = t
 else { grid.material.transparent = true; grid.material.opacity = 0.24; }
 scene.add(grid);
 
-// 0°가 캐릭터 정면임을 빠르게 알 수 있는 바닥 방향 표시.
 const frontArrow = new THREE.ArrowHelper(
   new THREE.Vector3(0, 0, -1),
   new THREE.Vector3(0, 0.02, 0),
@@ -87,7 +87,13 @@ const frontArrow = new THREE.ArrowHelper(
 );
 scene.add(frontArrow);
 
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/libs/draco/');
+dracoLoader.preload();
+
 const loader = new GLTFLoader();
+loader.setDRACOLoader(dracoLoader);
+
 const cache = new Map();
 let currentKey = null;
 let currentModel = null;
@@ -142,7 +148,6 @@ function updateCamera() {
   const radius = 0.72 + THREE.MathUtils.clamp(s.dist, 0.6, 7) * 0.78;
   const horizontal = Math.cos(phi) * radius;
 
-  // Prompt Studio에서 az=0은 정면. 모델의 정면이 -Z를 향하도록 정규화한다.
   camera.position.set(
     Math.sin(theta) * horizontal,
     target.y + Math.sin(phi) * radius,
@@ -263,7 +268,6 @@ canvas.addEventListener('pointermove', e => {
   lastY = e.clientY;
 
   const s = cameraState();
-  // 이전 버전과 반대 방향: 마우스를 오른쪽으로 끌면 뷰가 오른쪽으로, 아래로 끌면 아래쪽 궤도로 이동.
   const nextAz = THREE.MathUtils.clamp(s.az - dx * 0.62, -180, 180);
   const nextEl = THREE.MathUtils.clamp(s.el + dy * 0.48, -70, 70);
   setStudioValue('az', Math.round(nextAz * 10) / 10);
@@ -316,7 +320,6 @@ const ro = new ResizeObserver(() => requestRender());
 ro.observe(view3d);
 window.addEventListener('resize', requestRender);
 
-// 3D 탭이 초기 활성 상태인 경우도 대응.
 visible = view3d.classList.contains('active');
 if (visible) {
   const remembered = (() => {
