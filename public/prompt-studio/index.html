@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="dark" />
 <title>Prompt Studio</title>
 <link rel="stylesheet" href="style.css">
+<style>.legacyOrbitCanvas{display:none!important}.avatarToolbar{position:absolute;left:12px;right:12px;top:10px;z-index:4;display:flex;align-items:center;gap:8px;padding:7px 8px;border:1px solid #ffffff12;border-radius:12px;background:#090b0ed9;backdrop-filter:blur(12px)}.avatarLabel{font-size:10px;color:#858b9a;white-space:nowrap}.avatarSwitch{display:flex;gap:6px;flex-wrap:wrap}.avatarBtn{border:1px solid #ffffff16;background:#ffffff08;color:#b8bdc9;border-radius:999px;padding:6px 9px;font-size:10px}.avatarBtn:hover{border-color:#ffffff30;color:#fff}.avatarBtn.on{border-color:#ff7a1a88;background:#ff7a1a1b;color:#ffd2b0}.orbitStatus{position:absolute;right:12px;bottom:10px;z-index:3;font-size:9px;color:#a9b1c0;background:#090b0ebf;border:1px solid #ffffff10;padding:6px 8px;border-radius:999px}@media(max-width:700px){.avatarToolbar{align-items:flex-start;flex-direction:column}.avatarSwitch{gap:4px}.avatarBtn{padding:5px 7px}.orbitStatus{display:none}}</style>
 </head>
 <body>
 <header><div class="top"><div class="brand"><div class="logo">P</div><div><h1>Prompt Studio</h1><p>장면 · 태그 · 구도 · 카메라 → 모델별 프롬프트</p></div></div><span class="status">LIVE MVP</span></div></header>
@@ -16,7 +17,20 @@
 <section class="card"><div class="titleRow"><div><h2>3. 구도 · 카메라</h2><div class="hint">프리셋 / 2D / 3D가 같은 카메라 상태를 공유합니다.</div></div><div class="tabs" id="compositionTabs"><button class="tab on" data-view="preset">프리셋</button><button class="tab" data-view="frame2d">2D 프레임</button><button class="tab" data-view="orbit3d">3D 궤도</button></div></div><div class="compositionGrid"><div class="visual">
 <div class="view active" id="view-preset"><div style="padding:16px"><div class="presets" id="presetButtons"></div><div style="margin-top:20px" class="frame"><div class="subjectMarker" id="presetSubject" style="left:50%;top:50%"></div></div></div></div>
 <div class="view" id="view-frame2d"><div class="frame" id="frame2d"><div class="subjectMarker" id="frameSubject" style="left:50%;top:50%"></div></div><div class="orbitHelp">프레임 클릭: 피사체 배치</div></div>
-<div class="view" id="view-orbit3d"><canvas class="orbitCanvas" id="orbitCanvas"></canvas><div class="orbitHelp">드래그: 시점 · 휠: 거리</div></div>
+<div class="view" id="view-orbit3d">
+  <div class="avatarToolbar">
+    <span class="avatarLabel">3D 모델</span>
+    <div class="avatarSwitch" id="avatarSwitch">
+      <button class="avatarBtn on" data-avatar="standard">표준 마네킹</button>
+      <button class="avatarBtn" data-avatar="anime">애니 마네킹</button>
+      <button class="avatarBtn" data-avatar="xbot">Xbot형</button>
+    </div>
+  </div>
+  <canvas id="orbitCanvas" class="legacyOrbitCanvas" aria-hidden="true"></canvas>
+  <canvas class="orbitCanvas" id="threeCanvas"></canvas>
+  <div class="orbitStatus" id="orbitStatus">3D 모델 준비 중…</div>
+  <div class="orbitHelp">드래그: 시점 · 휠: 거리 · 모델 변경 시 카메라 상태 유지</div>
+</div>
 </div><div class="controls">
 <label class="control"><span>좌우 시점</span><input id="az" type="range" min="-180" max="180" value="0"><output id="azv">0°</output></label>
 <label class="control"><span>상하 시점</span><input id="el" type="range" min="-70" max="70" value="0"><output id="elv">0°</output></label>
@@ -32,4 +46,5 @@
 <aside class="resultPanel"><section class="card"><div class="resultHead"><div><div class="live">LIVE COMPILER</div><h2 style="margin-top:5px">결과 프롬프트</h2></div><button id="copyBtn" class="orange">복사</button></div><div class="badges"><span class="badge" id="modelBadge"></span><span class="badge" id="ratioBadge"></span><span class="badge" id="selBadge"></span></div><div class="tabs resultTabs"><button class="tab on" data-result="basic">기본안</button><button class="tab" data-result="detail">상세안</button><button class="tab" data-result="style">스타일안</button></div><textarea id="output" class="promptOut"></textarea><div class="resultActions"><span class="wordCount" id="wordCount"></span><button id="copyBtn2" class="ghost">클립보드 복사</button></div></section><section class="card"><div class="footerNote">이미지 생성 API는 연결하지 않은 MVP입니다. 현재 입력값을 모델별 프롬프트 문법으로 컴파일합니다. 네거티브는 선택한 항목만 포함합니다.</div></section></aside>
 </main>
 <script src="app.js" defer></script>
+<script type="module" src="viewer3d.js"></script>
 </body></html>
