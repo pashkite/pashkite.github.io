@@ -47,8 +47,9 @@
 <aside class="resultPanel"><section class="card"><div class="resultHead"><div><div class="live">LIVE COMPILER</div><h2 style="margin-top:5px">결과 프롬프트</h2></div><button id="copyBtn" class="orange">복사</button></div><div class="badges"><span class="badge" id="modelBadge"></span><span class="badge" id="ratioBadge"></span><span class="badge" id="selBadge"></span></div><div class="tabs resultTabs"><button class="tab on" data-result="basic">기본안</button><button class="tab" data-result="detail">상세안</button><button class="tab" data-result="style">스타일안</button></div><textarea id="output" class="promptOut"></textarea><div class="resultActions"><span class="wordCount" id="wordCount"></span><button id="copyBtn2" class="ghost">클립보드 복사</button></div></section><section class="card"><div class="footerNote">이미지 생성 API는 연결하지 않은 MVP입니다. 현재 입력값을 모델별 프롬프트 문법으로 컴파일합니다. 네거티브는 선택한 항목만 포함합니다.</div></section></aside>
 </main>
 <script src="app.js" defer></script>
+<script src="camera-precision.js" defer></script>
 <script src="selected-tags-ui.js" defer></script>
-<script type="module" src="viewer3d.js"></script>
+<script type="module" src="viewer3d-v2.js"></script>
 <script>
 (() => {
   const card = document.getElementById('compositionCard');
