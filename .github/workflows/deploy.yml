@@ -29,6 +29,17 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+      - name: Bundle VRoid models
+        shell: bash
+        run: |
+          set -euo pipefail
+          MODEL_DIR="./dist/prompt-studio/models"
+          mkdir -p "$MODEL_DIR"
+          BASE="https://raw.githubusercontent.com/iamenahs/xlunar-ai-avatar/main/public/avatars"
+          curl -L --fail --retry 4 --retry-delay 2 "$BASE/VRoid_Sample_A.glb" -o "$MODEL_DIR/VRoid_Sample_A.glb"
+          curl -L --fail --retry 4 --retry-delay 2 "$BASE/VRoid_Sample_B.glb" -o "$MODEL_DIR/VRoid_Sample_B.glb"
+          curl -L --fail --retry 4 --retry-delay 2 "$BASE/VRoid_Sample_D.glb" -o "$MODEL_DIR/VRoid_Sample_D.glb"
+          ls -lh "$MODEL_DIR"
       - name: Create .nojekyll
         run: touch ./dist/.nojekyll
       - name: Upload artifact
