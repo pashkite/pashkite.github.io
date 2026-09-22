@@ -73,3 +73,13 @@
   // app.js initializes asynchronously, but re-render now as well so this also works from cache.
   if (document.getElementById('presetButtons')) renderPresets();
 })();
+
+// Composition-strength UI/strict prompting loads after the base precision overrides above.
+(() => {
+  if (document.querySelector('script[data-composition-strength]')) return;
+  const script = document.createElement('script');
+  script.src = 'composition-strength.js';
+  script.defer = true;
+  script.dataset.compositionStrength = 'true';
+  document.head.appendChild(script);
+})();
