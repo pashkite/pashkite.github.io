@@ -9,19 +9,22 @@ if (!canvas || !view3d) throw new Error('Prompt Studio 3D canvas not found');
 const MODEL_DEFS = {
   standard: {
     label: 'VRoid A · 프릴',
-    url: 'https://cdn.jsdelivr.net/gh/iamenahs/xlunar-ai-avatar@main/public/avatars/VRoid_Sample_A.glb',
+    url: './models/VRoid_Sample_A.glb',
+    fallbackUrl: 'https://cdn.jsdelivr.net/gh/iamenahs/xlunar-ai-avatar@main/public/avatars/VRoid_Sample_A.glb',
     rotationY: Math.PI,
     targetHeight: 2.02,
   },
   anime: {
     label: 'VRoid B · 트윈테일',
-    url: 'https://cdn.jsdelivr.net/gh/iamenahs/xlunar-ai-avatar@main/public/avatars/VRoid_Sample_B.glb',
+    url: './models/VRoid_Sample_B.glb',
+    fallbackUrl: 'https://cdn.jsdelivr.net/gh/iamenahs/xlunar-ai-avatar@main/public/avatars/VRoid_Sample_B.glb',
     rotationY: Math.PI,
     targetHeight: 2.02,
   },
   xbot: {
     label: 'VRoid D · 롱헤어',
-    url: 'https://cdn.jsdelivr.net/gh/iamenahs/xlunar-ai-avatar@main/public/avatars/VRoid_Sample_D.glb',
+    url: './models/VRoid_Sample_D.glb',
+    fallbackUrl: 'https://cdn.jsdelivr.net/gh/iamenahs/xlunar-ai-avatar@main/public/avatars/VRoid_Sample_D.glb',
     rotationY: Math.PI,
     targetHeight: 2.02,
   },
@@ -243,6 +246,26 @@ function normalizeModel(model, def) {
   return model;
 }
 
+function loadGltf(url, label) {
+  return new Promise((resolve, reject) => {
+    loader.load(
+      url,
+      resolve,
+      (event) => {
+        if (!statusEl) return;
+        if (event.lengthComputable && event.total > 0) {
+          const pct = Math.min(99, Math.round((event.loaded / event.total) * 100));
+          statusEl.textContent = `${label} 불러오는 중… ${pct}%`;
+        } else {
+          const mb = (event.loaded / 1024 / 1024).toFixed(1);
+          statusEl.textContent = `${label} 불러오는 중… ${mb}MB`;
+        }
+      },
+      reject,
+    );
+  });
+}
+
 async function loadModel(keyName) {
   const def = MODEL_DEFS[keyName] || MODEL_DEFS.standard;
   const loadId = ++currentLoadId;
@@ -250,7 +273,14 @@ async function loadModel(keyName) {
   try {
     let entry = cache.get(keyName);
     if (!entry) {
-      const gltf = await loader.loadAsync(def.url);
+      let gltf;
+      try {
+        gltf = await loadGltf(def.url, def.label);
+      } catch (localErr) {
+        console.warn('Local model load failed, using CDN fallback:', localErr);
+        if (statusEl) statusEl.textContent = `${def.label} 로컬 로드 실패 · CDN으로 재시도…`;
+        gltf = await loadGltf(def.fallbackUrl, def.label);
+      }
       if (loadId !== currentLoadId) return;
       freezeUsefulPose(gltf);
       entry = { model: normalizeModel(gltf.scene, def), gltf };
@@ -264,11 +294,11 @@ async function loadModel(keyName) {
       btn.classList.toggle('on', btn.dataset.avatar === keyName);
     });
     try { localStorage.setItem('promptStudioAvatar', keyName); } catch (_) {}
-    if (statusEl) statusEl.textContent = `${def.label} · VRoid 캐릭터`;
+    if (statusEl) statusEl.textContent = `${def.label} · 로컬 캐시 사용`;
     requestRender();
   } catch (err) {
     console.error('3D model load failed:', err);
-    if (statusEl) statusEl.textContent = `${def.label} 로드 실패 · 다른 모델을 선택해 보세요`;
+    if (statusEl) statusEl.textContent = `${def.label} 로드 실패`;
   }
 }
 
