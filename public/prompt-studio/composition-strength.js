@@ -8,68 +8,141 @@
     if (allowed.has(saved)) strength = saved;
   } catch (_) {}
 
-  function physicalCameraCues(level) {
-    const e = Number(state.el);
-    const d = Number(state.dist);
-    const cues = [];
+  function activeModel() {
+    return document.getElementById('model')?.value || 'generic';
+  }
 
-    if (e <= -55) {
-      cues.push("camera placed at ground level directly beside the subject's feet");
-      cues.push("lens tilted steeply upward along the subject's body");
+  function cameraProfile(model) {
+    if (model === 'midjourney') return 'tag';
+    if (model === 'flux') return 'hybrid';
+    if (model === 'gpt-image' || model === 'nano-banana') return 'instruction';
+    return 'generic';
+  }
 
-      if (level !== 'normal') {
-        cues.push('feet dominate the immediate foreground and appear much larger than the head');
-        cues.push('head is much farther away near the upper part of the frame');
-        cues.push('strong vertical perspective and dramatic foreshortening from feet to head');
-        cues.push('the subject towers above the camera');
-        if (d <= 1.2) cues.push('camera is extremely close to the feet');
-      }
-
-      if (level === 'exact') {
-        cues.push('strict composition requirement: keep the camera beside the feet at ground height');
-        cues.push('the feet must remain the nearest visible body part to the lens');
-        cues.push('preserve the steep upward perspective even if the face appears smaller');
-        cues.push('do not change this to eye-level, waist-level, chest-level, or ordinary low-angle framing');
-        cues.push('do not flatten the perspective or move the camera farther away');
-      }
-    } else if (e <= -35) {
-      cues.push('camera positioned around ankle height and tilted upward toward the face');
-      if (level !== 'normal') cues.push('pronounced low-angle perspective with the lower body closer to the lens');
-      if (level === 'exact') {
-        cues.push('preserve ankle-height camera placement');
-        cues.push('do not convert this into an eye-level portrait');
-      }
-    } else if (e <= -15) {
-      cues.push('camera positioned below waist level and tilted upward');
-      if (level === 'exact') cues.push('keep the camera clearly below the subject, not at eye level');
-    } else if (e >= 55) {
-      cues.push('camera positioned almost directly above the subject with the lens aimed steeply downward');
-      if (level !== 'normal') {
-        cues.push('top of the head and shoulders are closest to the camera');
-        cues.push('ground is clearly visible around the subject in a steep top-down perspective');
-      }
-      if (level === 'exact') {
-        cues.push('strict composition requirement: maintain a near-overhead camera position');
-        cues.push('do not change this to a normal high-angle or eye-level view');
-      }
-    } else if (e >= 35) {
-      cues.push('camera positioned well above head height and tilted downward');
-      if (level !== 'normal') cues.push('strong high-angle perspective with the ground visible behind the subject');
-      if (level === 'exact') cues.push('keep the camera clearly above the subject and do not lower it to eye level');
-    } else if (e >= 15) {
-      cues.push('camera positioned above eye level and tilted downward');
-      if (level === 'exact') cues.push('preserve the elevated camera height');
+  function pushExtremeLow(cues, level, profile, d) {
+    if (profile === 'tag') {
+      cues.push('ground-level camera beside the feet', "extreme worm's-eye perspective", 'steep upward camera angle');
+      if (level !== 'normal') cues.push('feet dominant in foreground', 'dramatic feet-to-head foreshortening', 'towering subject perspective');
+      if (d <= 1.2) cues.push('camera extremely close to the feet');
+      if (level === 'exact') cues.push('strict ground-level foot-side viewpoint', 'preserve extreme upward perspective', 'eye-level framing excluded');
+      return;
     }
 
+    if (profile === 'hybrid') {
+      cues.push("camera at ground level directly beside the subject's feet", 'lens aimed steeply upward along the body');
+      if (level !== 'normal') cues.push('feet fill the near foreground while the head recedes toward the top of frame', 'strong vertical foreshortening');
+      if (d <= 1.2) cues.push('camera extremely close to the feet');
+      if (level === 'exact') cues.push('keep this exact ground-level camera placement; do not normalize it into an eye-level portrait');
+      return;
+    }
+
+    if (profile === 'instruction') {
+      cues.push("Place the camera on the ground directly beside the subject's feet.", "Tilt the lens steeply upward along the subject's body.");
+      if (level !== 'normal') {
+        cues.push('Make the feet the largest and nearest body parts in the immediate foreground.');
+        cues.push('Keep the head much farther away near the upper part of the frame, with strong feet-to-head foreshortening.');
+        cues.push('The subject should visibly tower above the camera.');
+      }
+      if (d <= 1.2) cues.push('Keep the lens extremely close to the feet.');
+      if (level === 'exact') {
+        cues.push('Treat this camera placement as a hard composition constraint.');
+        cues.push('Do not move the camera up to eye, chest, waist, or ordinary low-angle height.');
+        cues.push('Do not flatten the perspective or reduce the foreground size of the feet.');
+      }
+      return;
+    }
+
+    cues.push("camera placed at ground level directly beside the subject's feet", "lens tilted steeply upward along the subject's body");
+    if (level !== 'normal') cues.push('feet dominate the foreground', 'head recedes toward the top of frame', 'strong vertical foreshortening');
+    if (level === 'exact') cues.push('preserve this ground-level viewpoint; do not convert it to eye level');
+  }
+
+  function pushLow(cues, level, profile, band) {
+    const ankle = band === 'ankle';
+    if (profile === 'tag') {
+      cues.push(ankle ? 'ankle-height camera' : 'below-waist camera', 'upward camera angle');
+      if (level !== 'normal') cues.push('pronounced low-angle perspective');
+      if (level === 'exact') cues.push(ankle ? 'preserve ankle-height viewpoint' : 'preserve below-waist viewpoint', 'eye-level framing excluded');
+    } else if (profile === 'instruction') {
+      cues.push(ankle ? 'Place the camera around ankle height and tilt it upward toward the face.' : 'Place the camera clearly below waist height and tilt it upward.');
+      if (level !== 'normal') cues.push('Keep the lower body visibly closer to the lens than the upper body.');
+      if (level === 'exact') cues.push('Do not raise the camera to eye level.');
+    } else {
+      cues.push(ankle ? 'camera positioned around ankle height and tilted upward toward the face' : 'camera positioned below waist level and tilted upward');
+      if (level !== 'normal') cues.push('pronounced low-angle perspective with the lower body closer to the lens');
+      if (level === 'exact') cues.push('preserve the low camera height; do not convert this into an eye-level portrait');
+    }
+  }
+
+  function pushExtremeHigh(cues, level, profile) {
+    if (profile === 'tag') {
+      cues.push('near-overhead camera', 'steep top-down view', 'ground visible around subject');
+      if (level !== 'normal') cues.push('head and shoulders nearest to lens', 'strong top-down perspective');
+      if (level === 'exact') cues.push('strict near-overhead viewpoint', 'eye-level framing excluded');
+    } else if (profile === 'instruction') {
+      cues.push('Place the camera almost directly above the subject and aim the lens steeply downward.');
+      if (level !== 'normal') {
+        cues.push('Keep the top of the head and shoulders closest to the camera.');
+        cues.push('Show the ground clearly around the subject to preserve the steep top-down perspective.');
+      }
+      if (level === 'exact') {
+        cues.push('Treat the near-overhead camera position as a hard composition constraint.');
+        cues.push('Do not lower the camera into a normal high-angle or eye-level view.');
+      }
+    } else {
+      cues.push('camera positioned almost directly above the subject with the lens aimed steeply downward');
+      if (level !== 'normal') cues.push('top of head and shoulders nearest to camera', 'ground clearly visible around the subject');
+      if (level === 'exact') cues.push('maintain the near-overhead camera position; do not normalize to eye level');
+    }
+  }
+
+  function pushHigh(cues, level, profile, band) {
+    const steep = band === 'steep';
+    if (profile === 'tag') {
+      cues.push(steep ? 'camera well above head height' : 'camera above eye level', 'downward camera angle');
+      if (level !== 'normal') cues.push('strong high-angle perspective');
+      if (level === 'exact') cues.push('preserve elevated camera height');
+    } else if (profile === 'instruction') {
+      cues.push(steep ? 'Place the camera well above the subject’s head and tilt it downward.' : 'Place the camera above eye level and tilt it downward.');
+      if (level !== 'normal') cues.push('Keep the elevated viewpoint visually obvious in the final framing.');
+      if (level === 'exact') cues.push('Do not lower the camera to eye level.');
+    } else {
+      cues.push(steep ? 'camera positioned well above head height and tilted downward' : 'camera positioned above eye level and tilted downward');
+      if (level !== 'normal') cues.push('strong high-angle perspective');
+      if (level === 'exact') cues.push('preserve the elevated camera height');
+    }
+  }
+
+  function physicalCameraCues(level, model) {
+    const e = Number(state.el);
+    const d = Number(state.dist);
+    const profile = cameraProfile(model);
+    const cues = [];
+
+    if (e <= -55) pushExtremeLow(cues, level, profile, d);
+    else if (e <= -35) pushLow(cues, level, profile, 'ankle');
+    else if (e <= -15) pushLow(cues, level, profile, 'waist');
+    else if (e >= 55) pushExtremeHigh(cues, level, profile);
+    else if (e >= 35) pushHigh(cues, level, profile, 'steep');
+    else if (e >= 15) pushHigh(cues, level, profile, 'mild');
+
     if (level === 'exact') {
-      cues.push('follow the specified camera direction, height, distance, and lens as composition constraints');
-      cues.push('do not replace the requested framing with a conventional centered eye-level portrait');
+      if (profile === 'tag') {
+        cues.push('camera direction and lens are composition constraints', 'requested framing only');
+      } else if (profile === 'instruction') {
+        cues.push('Follow the specified camera direction, height, distance, lens, and framing as hard composition constraints.');
+        cues.push('Do not replace the requested framing with a conventional centered eye-level portrait.');
+      } else {
+        cues.push('follow the specified camera direction, height, distance, lens, and framing as strict composition constraints');
+        cues.push('do not replace the requested framing with a conventional centered eye-level portrait');
+      }
     }
 
     return cues;
   }
 
   cameraParts = function() {
+    const model = activeModel();
     const e = Number(state.el);
     const d = Number(state.dist);
     const l = Number(state.lens);
@@ -79,7 +152,7 @@
       elText(e),
       placementText(),
       `${l}mm lens`,
-      ...physicalCameraCues(strength),
+      ...physicalCameraCues(strength, model),
     ];
 
     if (Math.abs(state.roll) >= 5) {
@@ -89,10 +162,22 @@
     return arr.filter(Boolean);
   };
 
+  function modelLabel() {
+    const names = {
+      midjourney: 'Midjourney 태그형',
+      flux: 'Flux 혼합형',
+      'gpt-image': 'GPT Image 지시형',
+      'nano-banana': 'Nano Banana 지시형',
+      generic: '범용형',
+    };
+    return names[activeModel()] || '범용형';
+  }
+
   function hintText() {
-    if (strength === 'strong') return '카메라 위치와 원근관계를 명시해 구도를 강하게 고정합니다.';
-    if (strength === 'exact') return '카메라 위치·원근·금지 조건까지 반복해 구도 준수도를 최우선으로 합니다.';
-    return '핵심 카메라 정보만 넣어 프롬프트를 비교적 간결하게 유지합니다.';
+    const prefix = modelLabel();
+    if (strength === 'strong') return `${prefix} · 카메라 위치와 원근관계를 강하게 명시합니다.`;
+    if (strength === 'exact') return `${prefix} · 카메라 위치·원근·금지 조건까지 넣어 구도 준수를 최우선으로 합니다.`;
+    return `${prefix} · 핵심 카메라 정보만 간결하게 넣습니다.`;
   }
 
   function updateUi() {
@@ -104,7 +189,7 @@
     const badge = document.getElementById('compositionStrengthBadge');
     if (badge) {
       const names = { normal: '구도 보통', strong: '구도 강하게', exact: '구도 정확히' };
-      badge.textContent = names[strength];
+      badge.textContent = `${names[strength]} · ${modelLabel()}`;
     }
   }
 
@@ -132,6 +217,12 @@
       if (!btn) return;
       strength = btn.dataset.strength;
       try { localStorage.setItem(STORAGE_KEY, strength); } catch (_) {}
+      updateUi();
+      compile();
+    });
+
+    const modelSelect = document.getElementById('model');
+    modelSelect?.addEventListener('change', () => {
       updateUi();
       compile();
     });
